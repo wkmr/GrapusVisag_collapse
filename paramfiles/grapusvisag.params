@@ -1,0 +1,25 @@
+test			File prefix for outputs
+g2                      g1=sel-gravitating 1, g2=self-gravitating 2
+n			Run in debug mode? (y/n)
+y			Have multiple snapshots of population? (y/n)
+1.0e1			Time interval between snapshots (years)
+1.0e2			Snapshots not made after this time (except .final!)
+0.001                   Value of constant alpha in no GI regime
+1.0e31                  X Ray luminosity (in ergs s-1)
+y			Switch on N Body integration? (y/n)
+50			Number of Stars to simulate
+''			File path for data
+5.0E5			Maximum evolution time for systems (years)
+5.0e4                  Time between dumps for disc model
+-55			Random number seed
+1.0			Inner radius of disc models
+1.0 			Radial spacing of disc models
+1.0			Opacity Powerlaw index
+100.0			Maximum Initial Fragment Separation (units: Hill Radii)
+y			Give Fragments initial eccentricity/inclination?
+10.0			Migration parameter (tmig -->C*tmig)
+1.0			Gap Opening Parameter (tgap -->C*tgap)
+1.0			Collapse Timescale Parameter (tcool0 --> C*tcool0
+n			Truncate disc after fragmentation? (y/n)
+n			Model Radiative Feedback of Core Formation? (y/n)
+
