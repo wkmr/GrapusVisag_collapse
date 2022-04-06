@@ -10,7 +10,7 @@ n                       Include rate of change of Jeans mass (-10 > MdotJ > 0)
 0.75                    One minus probability of fragmentation in fragmentation region (i.e., 0.95 means 1 in 20).
 1.0e31                  X Ray luminosity (in ergs s-1)
 n			Switch on N Body integration? (y/n)
-128 			Number of Stars to simulate
+512 			Number of Stars to simulate
 0.5                     Mid-point of range of star masses (range from mstar0-1/8xmstar0 to mstar0+1/8mstar0) if in g mode.
 0.4                     Lower limit to disc-to-star mass ratio (range from q_disc0 to q_disc0 + 0.2) if in g mode.
 -7.0                    Lower limit to log10 of mass accretion rate (range from mdotvisc0 to mdotvisc0 + 1.5) if in g mode.
@@ -30,7 +30,7 @@ n                       Assume stellar irradiated disc (n = constant background 
 1.0			Opacity Powerlaw index
 100.0			Maximum Initial Fragment Separation (units: Hill Radii)
 y			Give Fragments initial eccentricity/inclination?
-10.0			Migration parameter (tmig -->C*tmig)
+10000.0			Migration parameter (tmig -->C*tmig)
 1.0			Gap Opening Parameter (tgap -->C*tgap)
 1.0			Collapse Timescale Parameter (tcool0 --> C*tcool0
 n			Model Radiative Feedback of Core Formation? (y/n)

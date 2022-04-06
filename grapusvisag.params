@@ -1,34 +1,38 @@
-test			File prefix for outputs
-g1                      g1=sel-gravitating 1, g2=self-gravitating 2, C=collapsing cloud
+tstart5e4		File prefix for outputs
+C                       g1=sel-gravitating 1, g2=self-gravitating 2, C=collapsing cloud
 n			Run in debug mode? (y/n)
 y			Have multiple snapshots of population? (y/n)
 1.0e1			Time interval between snapshots (years)
 1.0e2			Snapshots not made after this time (except .final!)
 0.001                   Value of constant alpha in no GI regime
+0.075                   Fragmentation boundary as represented by alpha
+n                       Include rate of change of Jeans mass (-10 > MdotJ > 0)
+0.75                    One minus probability of fragmentation in fragmentation region (i.e., 0.95 means 1 in 20).
 1.0e31                  X Ray luminosity (in ergs s-1)
 n			Switch on N Body integration? (y/n)
-50			Number of Stars to simulate
-0.5                     Mid-point of range of star masses (range from mstar0-1/8xmstar0 to mstar0+1/8mstar0).
-0.4                     Lower limit to disc-to-star mass ratio (range from q_disc0 to q_disc0 + 0.2)
--7.0                    Lower limit to log10 of mass accretion rate (range from mdotvisc0 to mdotvisc0 + 1.5)
-y                       Assume stellar irradiated disc (n = constant background Tirr)
+512 			Number of Stars to simulate
+0.5                     Mid-point of range of star masses (range from mstar0-1/8xmstar0 to mstar0+1/8mstar0) if in g mode.
+0.4                     Lower limit to disc-to-star mass ratio (range from q_disc0 to q_disc0 + 0.2) if in g mode.
+-7.0                    Lower limit to log10 of mass accretion rate (range from mdotvisc0 to mdotvisc0 + 1.5) if in g mode.
+n                       Assume stellar irradiated disc (n = constant background Tirr)
 10.0                    Luminosity of central star in solar luminosities
 10.0                    Constant background irradiation temperature (in K) if not using stellar irradiation
 ''			File path for data
-1.0     		Mass of cloud in collapsing cloud runs (solar masses)
-0.03    		Radius of cloud (pc)
-0.1     		f, for rotation of cloud
-5.0E5			Maximum evolution time for systems (years)
-5.0e4                   Time between dumps for disc model
--55			Random number seed
-1.0			Inner radius of disc models
+1.0     		Mass of cloud in collapsing cloud runs (solar masses) - C mode.
+0.03    		Radius of cloud (pc) - C mode.
+0.1     		f, for rotation of cloud - C mode.
+1.0d5                   time after which fragmentation can occur (years) - C mode.    
+2.5e6			Maximum evolution time for systems (years)
+2.5e5                   Time between dumps for disc model
+-15			Random number seed
+0.5			Inner radius of disc models
 1.0 			Radial spacing of disc models
 1.0			Opacity Powerlaw index
 100.0			Maximum Initial Fragment Separation (units: Hill Radii)
 y			Give Fragments initial eccentricity/inclination?
-10.0			Migration parameter (tmig -->C*tmig)
+10000.0			Migration parameter (tmig -->C*tmig)
 1.0			Gap Opening Parameter (tgap -->C*tgap)
 1.0			Collapse Timescale Parameter (tcool0 --> C*tcool0
 n			Model Radiative Feedback of Core Formation? (y/n)
 y                       Mass accretion onto protoplanet (y/n)
-y                       Include fraction of mass accretion through disc (y/n)
+n                       Include fraction of mass accretion through disc (y/n)
