@@ -6,6 +6,7 @@ subroutine evolve_radius(j,t)
 
 use eosdata,only: pi
 use embryodata
+use unitdata,only: yr
 
 implicit none
 
@@ -21,7 +22,7 @@ rchoose = embryo(j)%R0
 !rchoose = embryo(j)%r
 
 !embryo(j)%R = rchoose/(1.0 + 2.0*(t-embryo(j)%t_0_cool)/embryo(j)%t_cool0)**0.5
-embryo(j)%R = rchoose/(1.0 + 2.0*t/embryo(j)%t_cool0)**0.5
+embryo(j)%R = rchoose/(1.0 + 2.0*(t-embryo(j)%t_form)/embryo(j)%t_cool0)**0.5
 !embryo(j)%R = rchoose/(1.0 + 2.0*dt/embryo(j)%t_cool0)**0.5
 if ((embryo(j)%R .lt. rjup) .and. (embryo(j)%m .gt. 0.5d0*mjup)) then 
   embryo(j)%r = rjup
@@ -29,7 +30,5 @@ if ((embryo(j)%R .lt. rjup) .and. (embryo(j)%m .gt. 0.5d0*mjup)) then
 endif
 
 embryo(j)%rhoc = embryo(j)%M/(4.0*pi*theta_grad*embryo(j)%R**3)           
-
-!print*, j, rchoose/1.5d13, embryo(j)%r0/1.5d13, embryo(j)%r/1.5d13, embryo(j)%t_cool0
 
 end subroutine evolve_radius

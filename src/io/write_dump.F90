@@ -157,17 +157,21 @@ mdisk100 = mdisk100/solarmass
 !mdot_mag = mdot_mag/msolyr
 mdot_wind = mdot_wind/msolyr
 
+! Write out snapshot data (disk mass, sigma, total luminosity)
+!open(itimeomp,file=TRIM(prefix)//'_disc.'//fileno,status='unknown')
+
+#ifdef _OPENMP
+open(itimeomp,file=TRIM(prefix)//'.log',access='append',status='unknown')
+write(itimeomp,111) t/yr, dt/yr, mstar/solarmass, mdisk10, mdisk100, mdisk, sig_max, mdot_wind
+close(itimeomp)
+#else
+open(itime,file=TRIM(prefix)//'.log',access='append',status='unknown')
 write(itime,111) t/yr, dt/yr, mstar/solarmass, mdisk10, mdisk100, mdisk, sig_max, mdot_wind
 print*, t/yr, dt/yr, mstar/solarmass, mdisk10, mdisk100, mdisk, sig_max, mdot_wind
 print*,' here log:', t/yr, itime
-call flush(itime)
+close(itime)
+#endif
 
-! Write out snapshot data (disk mass, sigma, total luminosity)
-open(itimeomp,file=TRIM(prefix)//'_disc.'//fileno,status='unknown')
-write(itimeomp,111) t/yr, dt/yr, mstar/solarmass, mdisk10, mdisk100, mdisk, sig_max, mdot_wind
-close(itimeomp)
-!call flush(itime)
- 
 return
 
 end  subroutine write_dump

@@ -74,6 +74,7 @@ CONTAINS
     INTEGER idum2,j,k,iv(NTAB),iy
     SAVE iv,iy,idum2
     DATA idum2/123456789/, iv/NTAB*0/, iy/0/
+
     if (idum.le.0) then
        idum=max(-idum,1)
        idum2=idum
@@ -93,13 +94,12 @@ CONTAINS
        idum2=IA2*(idum2-k*IQ2)-k*IR2
        if (idum2.lt.0) idum2=idum2+IM2
        j=1+iy/NDIV
- 
-       print*, ' here ', j
 
        iy=iv(j)-idum2
        iv(j)=idum
        if(iy.lt.1)iy=iy+IMM1
        ran2=min(AM*iy,RNMX)
+
        return
 
      END FUNCTION

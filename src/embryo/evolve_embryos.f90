@@ -38,14 +38,6 @@ SUBROUTINE evolve_embryos(t)
      ! If embryo finished, skip to the next one
      IF(embryo(j)%finished==1) cycle
 
-     ! Decide whether to accrete gas or not (depending on gap opening)
-     ! Commented out - useful for future implementations
-     ! In general, embryos open "cold gaps" as they are quite massive
- 
-     if (accr_on == 'y') then
-       call accrete_gas(j,t)
-     endif
-
      ! Evolve the embryo radius and central temperature
 
      if(embryo(j)%idiss==0) then
@@ -78,6 +70,10 @@ SUBROUTINE evolve_embryos(t)
      ! Check for tidal disruption of the embryo
 
      call calc_tidal_disruption(j,t)
+
+     if (accr_on == 'y') then
+       call accrete_gas(j,t)
+     endif
 
      ! Check if embryo has been destroyed
      call check_for_dead_embryos(j)

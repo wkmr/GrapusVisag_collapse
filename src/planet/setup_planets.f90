@@ -73,8 +73,9 @@ call find_planets_in_disc
 
 do iplanet=1,nplanet
       print*, 'Planet ', iplanet, 'initially located at cell ', iplanetrad(iplanet)
-      print*, 'Radius: ', rz(iplanetrad(iplanet))/AU
+      print*, 'Orbital radius: ', rz(iplanetrad(iplanet))/AU
       print*, 'Mass: ' , mp(iplanet)/mjup
+      print*, 'Planet radius: ', embryo(iplanet)%R/rjup 
 enddo
 
 end subroutine setup_planets

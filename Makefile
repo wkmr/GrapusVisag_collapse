@@ -16,8 +16,8 @@ VPATH = src/main/ src/disc/ src/embryo/ src/eos/ src/io/ src/nbody/ src/planet/ 
 ##FFLAGS = -O3 -frecord-marker=4 -fdefault-real-8 -fdefault-double-8 -fimplicit-none -fbounds-check -ffpe-trap=invalid,zero,overflow -Wunused
 
 # For OpenMP runs
-##FFLAGS = -O0 -g -frecord-marker=4 -fdefault-real-8 -fdefault-double-8 -fimplicit-none -ffpe-trap=invalid,zero,overflow -fbounds-check -fopenmp -fbacktrace -Wunused
-FFLAGS = -O0 -g -fdefault-real-8 -fdefault-double-8 -fimplicit-none -fopenmp -fbacktrace
+FFLAGS = -O0 -g -frecord-marker=4 -fdefault-real-8 -fdefault-double-8 -fimplicit-none -ffpe-trap=invalid,zero,overflow -fbounds-check -fopenmp -Wunused -fbacktrace
+##FFLAGS = -O0 -g -fdefault-real-8 -fdefault-double-8 -fimplicit-none -fopenmp -fbacktrace
 #FFLAGS = -O3 -frecord-marker=4 -fdefault-real-8 -fdefault-double-8 -fimplicit-none -fbounds-check -fopenmp -Wunused
 
 # Create object files:

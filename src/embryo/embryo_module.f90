@@ -55,7 +55,7 @@ real :: m, a,R,Rg,Rg0, Rcore, mcore, msolids
 real :: Nsteps ! Number of steps left at an orbital radius
 real :: R0, T0, cs0, t_cool0, t_0_cool, t_grow0,t_sed0
 real :: T,L, t_cool, cs,rhoc, fg
-real :: t_grow, t_sed, tmig,tgap,tcross
+real :: t_form, t_grow, t_sed, tmig,tgap,tcross
 real :: t_spent ! Time spent at a particular orbital radius
 real :: tself,rself,scrit
 ! N Body variables

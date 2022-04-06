@@ -14,7 +14,7 @@
   real(kind=8) :: rho, Teff
   real :: diskmass, collapse_term
   real :: gamma_d_old, kappa_d_old
-  real :: t
+  real :: t, rnum
   integer :: i
   character(1) :: gen_embs
 
@@ -51,7 +51,7 @@
   diskmass = 0.0d0
 
   call sigma_mdot(t)
-!  call Eacc_calc(t)  
+  call Eacc_calc(t)  
 
   omega_d(:) = Sqrt(G*mstar/rz(:)**3.0d0)
   alpha_d(:) = alpha_visc
@@ -132,9 +132,9 @@
           alpha_g(i) = 0.0d0
         EndIf
 
-!        collapse_term = 4.0d0*E_acc(i)*dsigma_cloud(i)/9.0d0/cs_d(i)**2.0d0/sigma_d(i)/omega_d(i)
+        collapse_term = 4.0d0*E_acc(i)*dsigma_cloud(i)/9.0d0/cs_d(i)**2.0d0/sigma_d(i)/omega_d(i)
 
-!        alpha_g(i) = alpha_g(i) - collapse_term
+        alpha_g(i) = alpha_g(i) - collapse_term
      else if (alpha_g(i) .lt. 1.0d-12 .or.gamma_d(i)<1.00001) THEN
         alpha_g(i) = 1.0d-12
      endif
@@ -145,6 +145,7 @@
 
   enddo
 
+  gen_embs = 'N' 
   do i =isr, ier
     if (i .lt. 3) then
       alpha_g(i) = alpha_g(i) + alpha_g(i+1) + alpha_g(i+2) + alpha_g(i+3)
@@ -178,7 +179,7 @@
   cs_d(1) = cs_d(2)
   if ((runmode == 'C') .and. (nembryo == 0) .and. (mstar .gt. 0.0d0)) Then
  
-    where (omega_d > 0.0d0)
+    where ((omega_d > 0.0d0) .and. (sigma_d > 0.0d0))
       mjeans(:) = Sqrt(3.0)*pi*pi*pi*Sqrt(Qcrit)/(32.0d0*G)
       mjeans(:) = mjeans(:)*cs_d(:)*cs_d(:)*cs_d(:)
       mjeans(:) = mjeans(:)/(omega_d(:)*Sqrt(1.0+4.47*Sqrt(alpha_d(:))))
@@ -192,17 +193,17 @@
        ljeans(:) = 0.0d0
     end where 
 
-!    If (gen_embs == 'Y') Then
-!      print*, 'calling generate embryos'
-  
-!      call generate_embryos
+    If ((gen_embs == 'Y') .and. (t/yr .gt. t_frag)) Then
+      print*, 'calling generate embryos'
  
-!      If (nembryo .gt. 0) Then 
-!        print*, 'setting up planets'
+      call generate_embryos(t)
+ 
+      If (nembryo .gt. 0) Then 
+        print*, 'setting up planets'
 
-!        call setup_planets
-!      EndIf 
-!    EndIf    
+        call setup_planets
+      EndIf 
+    EndIf    
   endif
 
 return

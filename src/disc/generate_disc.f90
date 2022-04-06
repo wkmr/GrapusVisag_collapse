@@ -28,6 +28,7 @@ snapshotformat = "(I"//TRIM(zerostring)//"."//TRIM(zerostring)//")"
 print*, tmax, t_disc_dump, nfiles, nzeros, snapshotformat
 
 fg = 0.02 + ran2(iseed)*0.01
+
 q_disc = q_disc0 + ran2(iseed)*0.2
 
 mdisc = q_disc*mstar
@@ -110,10 +111,6 @@ allocate(drzm1(nrannuli))
 allocate(rf(nrannuli))
 allocate(rf1_2(nrannuli))
 allocate(drfm1(nrannuli))
-
-open(itime,file=TRIM(prefix)//'.log',status='unknown')
-
-print*, itime, TRIM(prefix)//'.log'
 
 rout = 500.0d0*udist
 

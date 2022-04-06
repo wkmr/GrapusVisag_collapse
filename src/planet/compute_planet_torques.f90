@@ -24,6 +24,7 @@ subroutine compute_planet_torques(t)
   torque_term(:) = 0.0
 
   ! Loop over each planet
+
   do iplanet =1,nplanet
 
      mratio = mp(iplanet)/mstar
@@ -134,8 +135,6 @@ subroutine compute_planet_torques(t)
      if(fII(iplanet) > 1.0) fII(iplanet) = 1.0d0
 
 !     fII(iplanet) = 0.0d0
-
-!     if (mod(t,10000.0) .lt. 1.0) write(25,*) t, Pcrit, fII(iplanet)
 
       !********************************************************
       ! Compute the total effective planet torque at this radius

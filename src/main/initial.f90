@@ -59,16 +59,17 @@ subroutine initial
   read(10,*) Lx_0                  ! X Ray luminosity (in ergs s-1)   
   read(10,*) nbody                 ! Use N Body integrator? (y/n)
   read(10,*) Nstar                 ! Number of star systems to simulate
-  read(10,*) mstar0                ! Mid-point of range of star masses (can be up to 1/8xmstar0 higher).
-  read(10,*) q_disc0               ! Lower limit to disc-to-star mass ratio (range from q_disc0 to q_disc0 + 0.2)
-  read(10,*) mdotvisc0             ! Lower limit to log10 of mass accretion rate (range from mdotvisc0 to mdotvisc0 + 1.5) 
+  read(10,*) mstar0                ! Mid-point of range of star masses (can be up to 1/8xmstar0 higher) if in g mode.
+  read(10,*) q_disc0               ! Lower limit to disc-to-star mass ratio (range from q_disc0 to q_disc0 + 0.2) if in g mode.
+  read(10,*) mdotvisc0             ! Lower limit to log10 of mass accretion rate (range from mdotvisc0 to mdotvisc0 + 1.5) if in g mode. 
   read(10,*) stell_irr             ! Assume stellar irradiated disc (n = constant background Tirr)
   read(10,*) Lstar                 ! Luminosity of central star in solar luminosities
   read(10,*) Tirr                  ! Constant background irradiation temperature (in K) if not using stellar irradiation
   read(10,*) datafilepath          ! File path to location of disc file
-  read(10,*) Mcloud_0              ! Mass of cloud in collapsing cloud runs (solar masses) 
-  read(10,*) Rcloud_0              ! Radius of cloud (pc)
-  read(10,*) f_cloud_0             ! f, for rotation of cloud    
+  read(10,*) Mcloud_0              ! Mass of cloud in collapsing cloud runs (solar masses) - C mode.
+  read(10,*) Rcloud_0              ! Radius of cloud (pc) - C mode.
+  read(10,*) f_cloud_0             ! f, for rotation of cloud - C mode.    
+  read(10,*) t_frag                ! time after which fragmentation can occur - C mode.
   read(10,*) tmax                  ! Maximum runtime of the model (in years)
   read(10,*) t_disc_dump           ! Time between dumps for disc model
   read(10,*) iseed                 ! Random number seed
@@ -99,6 +100,8 @@ subroutine initial
 
   iseed = -abs(iseed)
 
+  print*, 'iseed 1 = ', iseed 
+
   ! Disc model counter (only used when interpolating from file)
   imodel = 0
 
@@ -109,7 +112,6 @@ subroutine initial
   OPEN(istart, file=TRIM(prefix_orig)//'.initial', status='unknown')
   OPEN(ifinal, file=TRIM(prefix_orig)//'.final',status='unknown')
   OPEN(ilog, file=TRIM(prefix_orig)//'.log', status='unknown')
-
 
   !
   ! Set up files for snapshots

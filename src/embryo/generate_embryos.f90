@@ -1,4 +1,4 @@
-SUBROUTINE generate_embryos
+SUBROUTINE generate_embryos(t)
   ! Subroutine finds fragment radius, and then calculates fragment masses at equal log a spacing
 
   use stardata
@@ -11,6 +11,7 @@ SUBROUTINE generate_embryos
 
   integer :: i,j,ibody
   real :: kappa,r_hill,rtest,exp1,exp2
+  real :: t, rnum
   real, dimension(100) :: cspace
 
 
@@ -19,7 +20,7 @@ SUBROUTINE generate_embryos
   character(6) :: filenumformat
   character(10) :: file_no,runno
 
-  If(allocated(sigdot_accr)) deallocate(sigdot_accr)
+  IF(allocated(sigdot_accr)) deallocate(sigdot_accr)
   allocate(sigdot_accr(nrannuli))
 
   i=0
@@ -28,9 +29,10 @@ SUBROUTINE generate_embryos
      i=i+1
 
      IF (alpha_d(i) .gt. alpha_frag) THEN
+       call random_number(rnum)
        If (MJeansdot == 'y') Then
         IF(gamma_j(i)>-10.0 .and. gamma_j(i)<0.0) THEN
-          If (ran2(iseed) .gt. fragprob) Then
+          If (rnum .gt. fragprob) Then
             rfrag = r_d(i)
             irfrag = i
             exit
@@ -39,8 +41,7 @@ SUBROUTINE generate_embryos
         print*, 'gamma_j = ', gamma_j(i)
        EndIf
        If (MJeansdot == 'n') Then
-         print*, ran2(iseed)
-         If (ran2(iseed) .gt. fragprob) Then
+         If (rnum .gt. fragprob) Then
            rfrag = r_d(i)
            irfrag = i
            exit
@@ -67,7 +68,7 @@ SUBROUTINE generate_embryos
   nembryo=1
 
   j = 0
-  DO WHILE (i < irout)
+  DO WHILE ((i < irout) .and. (alpha_d(i) .gt. alpha_frag)) 
      j =j+1
      cspace(j) = 1.5 + ran2(iseed)*(fragsep-1.5)
 
@@ -109,6 +110,8 @@ SUBROUTINE generate_embryos
 
      embryo(j)%t_spent = 0.0
      embryo(j)%finished = 0
+
+     embryo(j)%t_form = t
 
      totalmass = totalmass + embryo(j)%m
 
@@ -158,7 +161,7 @@ SUBROUTINE generate_embryos
      embryo(j)%cs0 = gamma_d(i)*k_B*embryo(j)%T0/(mu*m_H)
      embryo(j)%cs0 = sqrt(embryo(j)%cs0)
 
-     print*, embryo(j)%R0/au, ljeans(i)/au, alpha_d(i)
+     print*, embryo(j)%R0/au, ljeans(i)/au, alpha_d(i), embryo(j)%t_form
 
      embryo(j)%R = embryo(j)%R0
      embryo(j)%rhoc = embryo(j)%M/(4.0*pi*theta_grad*embryo(j)%R**3)

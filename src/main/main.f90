@@ -49,28 +49,30 @@ call initial
 ! Loop over total number of stars
 !$OMP PARALLEL default(private) &
 !$OMP shared(Nstar,mstar0,prefix_orig,runmode,debug,multishot,tsnap,maxsnap,alpha_visc,Lx_0) &
+!$OMP shared(alpha_frag,MJeansdot,fragprob) &
 !$OMP shared(q_disc0,mdotvisc0) &
 !$OMP shared(nbody,datafilepath,tmax,t_disc_dump,iseed,rin) &
 !$OMP shared(stell_irr, Lstar, Tirr) &
-!$OMP shared(Mcloud_0, Rcloud_0, f_cloud_0) &
+!$OMP shared(Mcloud_0, Rcloud_0, f_cloud_0, t_frag) &
 !$OMP shared(p_kap,fragsep,initialecc,c_mig,c_gap,c_collapse,core_feedback) &
 !$OMP shared(accr_on, accr_on_disc)
 !$OMP do schedule(dynamic)
   DO is=1,Nstar
      istar = is
 
+     nembryo = 0 
+     nplanet = 0
+
      write (fnum,'(I5.5)') istar   
 
      prefix = trim(prefix_orig)//trim(fnum)
-
-     print*, prefix
 
      ! Create a T_Tauri star
      CALL generate_star
 
      ! Generate a self-consistent self-gravitating disc
      CALL generate_disc
-
+ 
      print*, 'generate disc finished'
 
 !     if (rout/AU.gt.50 .and. rout/AU.lt.500) then
@@ -89,7 +91,7 @@ call initial
 !     IF(nembryo>0) CALL evolve
       snapshotcounter = 1
 
-      print*, nembryo
+      print*, nembryo, nplanet
 
       If (nembryo.ge.0) then
 !        call write_dump(0.0) 
@@ -103,10 +105,6 @@ call initial
 !      print*, 'ERROR: Disc radius too small/large, trying again...'
 !      call nbody_deallocate_arrays 
 !    endif
-
-     print*, 'closing logfile'
-
-     close(itime)
 
     !If (nplanet .gt. 0) CALL evolve
     !If ((nplanet .eq. 0) .and. (nbody=='y')) call nbody_deallocate_arrays 

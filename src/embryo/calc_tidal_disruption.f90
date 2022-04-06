@@ -6,6 +6,7 @@ subroutine calc_tidal_disruption(j,t)
   use stardata,   only: mstar
   use embryodata
   use eosdata,    only: G,pi
+  use unitdata,   only: AU, yr
   implicit none
 
   integer,intent(in) :: j
@@ -35,21 +36,19 @@ subroutine calc_tidal_disruption(j,t)
      ! Strip the outer layers on an orbital timescale
      
      if(embryo(j)%r> hillcore.and.r_hill < embryo(j)%r) then
-        orb = sqrt(G*mstar/embryo(j)%a**3)
-        orb = 2.0*pi/orb
+        orb = sqrt(G*mstar/embryo(j)%a**3.0d0)
+        orb = 2.0d0*pi/orb
 
         rstrip = max(r_hill,hillcore)
           
         embryo(j)%r = embryo(j)%r - (embryo(j)%r - rstrip)*(1.0-exp(-dt/(1.0*orb))) ! Gradual depletion of envelope over one orbital period
 
 !        embryo(j)%R0 = embryo(j)%r*(1.0 + 2.0*(t-dt)/embryo(j)%t_cool0)**0.5
-        embryo(j)%R0 = embryo(j)%r*(1.0 + 2.0*t/embryo(j)%t_cool0)**0.5
+        embryo(j)%R0 = embryo(j)%r*(1.0 + 2.0*(t-embryo(j)%t_form)/embryo(j)%t_cool0)**0.5
 
-!        print*, j, embryo(j)%a/1.5e13, embryo(j)%m/mjup, embryo(j)%r/rjup, embryo(j)%R0/rjup, embryo(j)%r/r_hill
-     
      endif
    
-     embryo(j)%M = 4.0*pi*embryo(j)%rhoc*embryo(j)%r**3*theta_grad
+     embryo(j)%M = 4.0*pi*embryo(j)%rhoc*embryo(j)%r**3.0d0*theta_grad
       
      if(embryo(j)%m < embryo(j)%mcore) then
         embryo(j)%r = embryo(j)%rcore
@@ -57,12 +56,6 @@ subroutine calc_tidal_disruption(j,t)
         
      endif
 
-!     embryo(j)%t_0_cool = t
-
-!     print*, embryo(j)%t_0_cool, embryo(j)%r/rjup
-
   endif
-
-!  print*, embryo(j)%r/1.5E13, embryo(j)%m/1.898E30
 
 end subroutine calc_tidal_disruption

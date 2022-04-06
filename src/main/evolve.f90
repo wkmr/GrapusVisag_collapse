@@ -53,9 +53,9 @@ SUBROUTINE evolve
 
     If (nembryo .gt. 0) Then
       call find_planets_in_disc    
-    EndIf
 
-!    call evolve_embryos(t)
+      call evolve_embryos(t)
+    EndIf   
 
     DO WHILE (.not.timestepOK)
 
@@ -68,6 +68,7 @@ SUBROUTINE evolve
 
        If (nembryo .gt. 0) Then
          torque_term(:) = 0.0d0
+
          call compute_planet_torques(t)
        EndIf
 
@@ -94,8 +95,7 @@ SUBROUTINE evolve
 
        If (runmode == 'C') then
          call sigma_mdot(t)
-!         call Eacc_calc(t)
-         E_acc(:) = 0.0d0
+         call Eacc_calc(t)
        Else
          dsigma_cloud(:) = 0.0d0
          E_acc(:) = 0.0d0
@@ -154,13 +154,11 @@ SUBROUTINE evolve
 
           snew(i) = sigma_d(i) + rzm1(i)*drzm1(i)*(3.0*(term1-term2) - dtorque)*dt - sigdot_wind(i)*dt 
           If (runmode == 'C') Then
-            print*, i, t/yr, rz(i)/AU, sigma_d(i), dsigma_cloud(i)
-           
             snew(i) = snew(i) + dsigma_cloud(i)*dt
           EndIf
 
           if ((accr_on == 'y') .and. (nembryo .gt. 0)) then
-            snew(i) = snew(i) - sigdot_accr(i)*dt
+!            snew(i) = snew(i) - sigdot_accr(i)*dt
             mass_accr = mass_accr + twopi*sigdot_accr(i)*rz(i)*(rz(i+1)-rz(i))*dt
           endif
           
@@ -176,7 +174,7 @@ SUBROUTINE evolve
           if (((runmode=='g2').or.(runmode=='C')).and.(alpha_d(i) .le. (alpha_visc + 1.0e-8))) then
             if ((sigma_d(i) .ne. 0.0d0).and.(cp .ne. 0.0d0)) Then
               Tnew(i) = T_d(i) + 2.0*dt*(heatfunc(i)-coolfunc(i))/(cp*sigma_d(i)) - vr*dTcdr*dt
-!              Tnew(i) = Tnew(i) + E_acc(i)*dsigma_cloud(i)*dt/(cp*sigma_d(i)) 
+              Tnew(i) = Tnew(i) + E_acc(i)*dsigma_cloud(i)*dt/(cp*sigma_d(i)) 
             else
               Tnew(i) = T_d(i)
             endif
@@ -256,10 +254,10 @@ SUBROUTINE evolve
     sigma_d(ier+1) = sigma_d(ier)*sqrt(rz(ier)/rz(ier+1))
     T_d(ier+1) = T_d(ier)
 
-
-    if (t/3.15d7 .gt. 1.0d5) call migrate_planets 
-
     do iplanet = 1, nembryo
+      If (t/yr .gt. (embryo(iplanet)%t_form/yr + 2.5d4)) Then
+        call migrate_planets
+      EndIf       
       embryo(iplanet)%a = ap(iplanet)
       mp(iplanet) = embryo(iplanet)%m
     enddo 
@@ -314,6 +312,14 @@ SUBROUTINE evolve
        tdump = 0.0
     endif
 
+    If (t/yr .gt. 3.0d5) Then
+      If (nembryo .eq. 0) Then
+        exit
+      EndIf
+      If ((nembryo .eq. 1) .and. (embryo(1)%a/AU .lt. 1.0d0)) Then
+        exit
+      EndIf       
+    EndIf  
   enddo   
 
      ! If all embryos have finished, exit the loop
