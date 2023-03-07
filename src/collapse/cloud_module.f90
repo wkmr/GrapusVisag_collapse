@@ -13,7 +13,7 @@ module clouddata
 
 !$OMP threadprivate(rhocloud, beta_cloud, amax_cloud, tff, mdot_cloud, mdot)
 !$OMP threadprivate(omega_cloud, dmstar_cloud)
-!$OMP threadprivate(dMcloud, dMtot, MRouter, Router, Mouter, Azero)
+!$OMP threadprivate(dMcloud, dMtot, MRouter, Router, Mouter, azero)
 !$OMP threadprivate(Mass_enc, fM, dsigma_cloud, E_acc)
 
 end module clouddata

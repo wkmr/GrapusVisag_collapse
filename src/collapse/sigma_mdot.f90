@@ -36,10 +36,10 @@ subroutine sigma_mdot(t)
      endif
    enddo
    do i = isr, ier-1
-     dsigma_cloud(i) = (fM(i+1)-fM(i))*mdot/2.0d0/pi/rz(i)/(rf(i+1)-rf(i))
+     dsigma_cloud(i) = (fM(i+1)-fM(i))*mdot/pi/(rf(i+1)**2.0d0-rf(i)**2.0d0)
    enddo
 
-   dmstar_cloud = fM(1)*mdot
+   dmstar_cloud = fM(2)*mdot
 
 end subroutine sigma_mdot
 

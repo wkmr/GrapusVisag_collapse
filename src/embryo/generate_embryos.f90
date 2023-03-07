@@ -28,7 +28,7 @@ SUBROUTINE generate_embryos(t)
   DO WHILE(i<nrannuli) 
      i=i+1
 
-     IF (alpha_d(i) .gt. alpha_frag) THEN
+     IF ((alpha_d(i) .gt. alpha_frag).and.(rz(i)/AU .lt. 400.0d0)) THEN
        call random_number(rnum)
        If (MJeansdot == 'y') Then
         IF(gamma_j(i)>-10.0 .and. gamma_j(i)<0.0) THEN
@@ -38,7 +38,6 @@ SUBROUTINE generate_embryos(t)
             exit
           EndIf
         EndIf
-        print*, 'gamma_j = ', gamma_j(i)
        EndIf
        If (MJeansdot == 'n') Then
          If (rnum .gt. fragprob) Then
@@ -51,7 +50,6 @@ SUBROUTINE generate_embryos(t)
   ENDDO
 
   IF(i==nrannuli) THEN
-     print*, 'No fragments formed'
      IF(allocated(embryo)) deallocate(embryo)
      nembryo=0
      return
@@ -80,9 +78,11 @@ SUBROUTINE generate_embryos(t)
         i=i+1
      END DO
 
-     rtest = r_d(i)
-     nembryo = nembryo+1
-     
+     if (i .lt. irout) Then
+       rtest = r_d(i)
+       nembryo = nembryo+1
+     endif
+ 
   ENDDO
   
   write(*,'(A,I1,A)') 'There are ',nembryo, ' embryos'

@@ -15,6 +15,7 @@
   real :: diskmass, collapse_term
   real :: gamma_d_old, kappa_d_old
   real :: t, rnum
+  real, dimension(nrannuli) :: T_d_temp
   integer :: i
   character(1) :: gen_embs
 
@@ -50,8 +51,13 @@
 
   diskmass = 0.0d0
 
-  call sigma_mdot(t)
-  call Eacc_calc(t)  
+  If (runmode == 'C') then
+    call sigma_mdot(t)
+    call Eacc_calc(t)  
+  Else
+    dsigma_cloud(:) = 0.0d0
+    E_acc(:) = 0.0d0
+  EndIf
 
   omega_d(:) = Sqrt(G*mstar/rz(:)**3.0d0)
   alpha_d(:) = alpha_visc
@@ -86,12 +92,12 @@
         call eos_cs(rho,cs_d(i))
 
         gamma_d(i) = gammamuT(1)
-        T_d(i) = gammamuT(3)
+        T_d_temp(i) = gammamuT(3)
         kappa_d(i) = gammamuT(4)
 
-        if(T_d(i)<T_source(i)) then
-           T_d(i) = T_source(i)
-           call eos_T(rho,T_d(i))
+        if(T_d_temp(i)<T_source(i)) then
+           T_d_temp(i) = T_source(i)
+           call eos_T(rho,T_d_temp(i))
            Q(i) = cs_d(i)*omega_d(i)/(pi*G*sigma_d(i))
            H_d = cs_d(i)/omega_d(i)
         endif
@@ -100,10 +106,10 @@
         tau_d(i) = kappa_d(i)*sigma_d(i)
 
         ! Cooling function for disc
-        coolfunc(i) = 16.0d0/3.0d0*stefan*(T_d(i)**4.0d0-T_source(i)**4.0d0)
+        coolfunc(i) = 16.0d0/3.0d0*stefan*(T_d_temp(i)**4.0d0-T_source(i)**4.0d0)
         coolfunc(i) = coolfunc(i)*tau_d(i)/(1.0d0+tau_d(i)**2.0d0)
 
-        Teff = T_d(i)**4.0d0*tau_d(i)/(1.0d0+tau_d(i)**2.0d0)
+        Teff = T_d_temp(i)**4.0d0*tau_d(i)/(1.0d0+tau_d(i)**2.0d0)
         Teff = Teff**0.25d0
 
         twoDint = cs_d(i)**2.0*sigma_d(i)/gamma_d(i)/(gamma_d(i)-1.0d0)
@@ -115,8 +121,8 @@
         EndIf
 
      ELSE
-        T_d(i) = T_source(i) 
-        cs_d(i) = 0.0
+        T_d_temp(i) = T_source(i) 
+        cs_d(i) = 0.0d0 
         kappa_d(i) = 0.0
         gamma_d(i) = 0.0
         tcool(i) = 1.0d35
@@ -139,10 +145,20 @@
         alpha_g(i) = 1.0d-12
      endif
 
-     if (alpha_g(i) .lt. alpha_visc) then
+     if (alpha_g(i) .le. alpha_visc) then
        alpha_g(i) = alpha_visc
+       If (T_d(i) .lt. T_source(i)) then
+         T_d(i) = T_source(i)
+       EndIf
+       If (cs_d(i) .eq. 0.0d0) Then
+         cs_d(i) = Sqrt(1.6667*k_B*T_d(i)/2.4d0/m_H)
+       EndIf
+       coolfunc(i) = 16.0d0/3.0d0*stefan*(T_d(i)**4.0d0-T_source(i)**4.0d0)
+       coolfunc(i) = coolfunc(i)*tau_d(i)/(1.0d0+tau_d(i)**2.0d0) 
+     else
+       T_d(i) = T_d_temp(i)
      endif
-
+     
   enddo
 
   gen_embs = 'N' 
@@ -150,14 +166,23 @@
     if (i .lt. 3) then
       alpha_g(i) = alpha_g(i) + alpha_g(i+1) + alpha_g(i+2) + alpha_g(i+3)
       alpha_g(i) = (alpha_g(i) + alpha_g(i+4))/5.0d0
+
+      cs_d(i) = cs_d(i) + cs_d(i+1) + cs_d(i+2) +cs_d(i+3)
+      cs_d(i) = (cs_d(i) + cs_d(i+4))/5.0d0
     endIf
     if (i .gt. ier - 3) then
       alpha_g(i) = alpha_g(i) + alpha_g(i-4) + alpha_g(i-3) + alpha_g(i-2)
-      alpha_g(i) = (alpha_g(i) - alpha_g(i-1))/5.0d0
+      alpha_g(i) = (alpha_g(i) + alpha_g(i-1))/5.0d0
+
+      cs_d(i) = cs_d(i) + cs_d(i-4) + cs_d(i-3) + cs_d(i-2)
+      cs_d(i) = (alpha_g(i) + cs_d(i-1))/5.0d0
     endIf
     if ((i .gt. 2)  .and. (i .lt. ier-2)) then
       alpha_g(i) = alpha_g(i-2) + alpha_g(i-1) + alpha_g(i)
       alpha_g(i) = (alpha_g(i) + alpha_g(i+1) + alpha_g(i+2))/5.0
+
+      cs_d(i) = cs_d(i-2) + cs_d(i-1) + cs_d(i)
+      cs_d(i) = (cs_d(i) + cs_d(i+1) + cs_d(i+2))/5.0
     endif
 
     If (alpha_g(i) .gt. alpha_frag) Then
@@ -194,7 +219,6 @@
     end where 
 
     If ((gen_embs == 'Y') .and. (t/yr .gt. t_frag)) Then
-      print*, 'calling generate embryos'
  
       call generate_embryos(t)
  

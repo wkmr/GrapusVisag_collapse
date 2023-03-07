@@ -48,18 +48,21 @@ call initial
 
 ! Loop over total number of stars
 !$OMP PARALLEL default(private) &
-!$OMP shared(Nstar,mstar0,prefix_orig,runmode,debug,multishot,tsnap,maxsnap,alpha_visc,Lx_0) &
+!$OMP shared(Nstar,mstar0,prefix_orig,runmode,debug,multishot,tsnap,maxsnap,alpha_visc0,alpha_visc,Lx_0) &
 !$OMP shared(alpha_frag,MJeansdot,fragprob) &
 !$OMP shared(q_disc0,mdotvisc0) &
 !$OMP shared(nbody,datafilepath,tmax,t_disc_dump,iseed,rin) &
-!$OMP shared(stell_irr, Lstar, Tirr) &
+!$OMP shared(stell_irr, Lstar, Tirr0, Tirr) &
 !$OMP shared(Mcloud_0, Rcloud_0, f_cloud_0, t_frag) &
 !$OMP shared(p_kap,fragsep,initialecc,c_mig,c_gap,c_collapse,core_feedback) &
 !$OMP shared(accr_on, accr_on_disc)
 !$OMP do schedule(dynamic)
+
   DO is=1,Nstar
      istar = is
 
+!     mdotvisc0 = mdotvisc0 + 0.003*is
+ 
      nembryo = 0 
      nplanet = 0
 
@@ -73,15 +76,21 @@ call initial
      ! Generate a self-consistent self-gravitating disc
      CALL generate_disc
  
-     print*, 'generate disc finished'
+!     mdotvisc0 = mdotvisc0 - 0.003*is
+
+     print*, 'generate disc finished', is, Nstar
 
 !     if (rout/AU.gt.50 .and. rout/AU.lt.500) then
 !      HERE
      call setup_wind
 
-!       call generate_embryos
+     if (runmode .ne. 'C') Then
+    
+       call generate_embryos
 
-!       call setup_planets
+       call setup_planets
+   
+     endif
 
        ! Where possible, generate embryos from fragmenting disc
        ! Subroutine outputs initial embryo M, R, a,  to file
@@ -93,8 +102,8 @@ call initial
 
       print*, nembryo, nplanet
 
-      If (nembryo.ge.0) then
-!        call write_dump(0.0) 
+      If (nembryo.gt.0) then
+        call write_dump(0.0) 
         CALL evolve
       else
         call nbody_deallocate_arrays 

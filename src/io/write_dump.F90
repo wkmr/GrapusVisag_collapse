@@ -41,10 +41,8 @@ subroutine write_dump(t)
   itorqueomp = itorque
 #endif
 
-
   ! Calculate disc properties and spectrum
-
-  call disc_properties
+  call disc_properties(t)
 !  call luminosity(tot_lumin,spectrum,Tc,tau)
 
   write(fileno, snapshotformat) snapshotcounter

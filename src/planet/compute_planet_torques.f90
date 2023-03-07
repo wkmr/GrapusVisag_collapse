@@ -14,6 +14,7 @@ subroutine compute_planet_torques(t)
   integer :: iplanet,i
   real :: rhill,mratio,deltap, Pcrit, typeInorm
   real :: tmig1, lambda_dash, deltamax,aspectratio, softenfactor
+  real :: gap_crit
   real :: t
   logical :: soften
 
@@ -130,11 +131,19 @@ subroutine compute_planet_torques(t)
      Pcrit = 0.75 * H_d(iplanetrad(iplanet))/rhill 
      Pcrit = Pcrit + 50.0*alpha_d(iplanetrad(iplanet))*(H_d(iplanetrad(iplanet))/ap(iplanet))**2/mratio
 
+     gap_crit = 40.0*mstar*alpha_d(iplanetrad(iplanet))*(H_d(iplanetrad(iplanet))/ap(iplanet))**2
+
      fII(iplanet) = exp(-(Pcrit-1.0)**2.0d0)
      if (Pcrit .lt. 1.0d0) fII(iplanet) = 1.0d0
      if(fII(iplanet) > 1.0) fII(iplanet) = 1.0d0
 
-!     fII(iplanet) = 0.0d0
+!     if (t/yr .gt. 5.0d5) Then
+!        print*, Pcrit, fII(iplanet), H_d(iplanet)/au, mp(iplanet)/1.898d30 
+!        print*, ap(iplanet)/au, rhill/au
+!        print*, alpha_d(iplanetrad(iplanet)), gap_crit/1.898d30
+!     endif
+
+!     fII(iplanet) = 1.0d0
 
       !********************************************************
       ! Compute the total effective planet torque at this radius

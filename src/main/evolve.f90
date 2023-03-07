@@ -18,12 +18,24 @@ SUBROUTINE evolve
   real :: t, tout, tnext
   real (kind=8) :: dtmin,CO,C1,dr2
   real (kind=8) :: term1, term2
-  real(kind=8) :: diskmass, diskmass_added
-  real(kind=8) :: massindisc1,massindisc2,mass_added
+  real (kind=8) :: diskmass, diskmass_added
+  real (kind=8) :: massindisc1,massindisc2,mass_added
+  real (kind=8) :: angmom_disc, angmom_added, angmom_tot
+  real (kind=8) :: ro, M_ro, vphi
+  real (kind=8) :: masstot, radnew 
+  real (kind=8) :: sigma_d_max
+ 
+  real,allocatable, dimension(:) :: massenc, massenc_collapse
+
   real :: dtorque, dTcdr, vr, dt_torque
   real :: cp
   real :: mass_accr, Mdotwind
   logical :: timestepOK
+
+  If(allocated(massenc)) deallocate(massenc)
+  If(allocated(massenc_collapse)) deallocate(massenc_collapse)
+  allocate(massenc(nrannuli))
+  allocate(massenc_collapse(nrannuli))
 
   tdump = 0.0
   isnap = 0
@@ -56,6 +68,18 @@ SUBROUTINE evolve
 
       call evolve_embryos(t)
     EndIf   
+
+    massenc(:) = 0.0d0
+    massenc_collapse(:) = 0.0d0
+
+    massenc(1) = mstar 
+    massenc_collapse(1) = mstar_collapse 
+    do i = isr, ier
+      massenc(i) = sigma_d(i-1)*pi*(rf(i)**2.0d0 - rf(i-1)**2.0d0) + massenc(i-1)
+      massenc_collapse(i) = sigma_d_collapse(i-1)*pi*(rf(i)**2.0d0 - rf(i-1)**2.0d0)
+      massenc_collapse(i) = massenc_collapse(i) + massenc_collapse(i-1)
+    enddo
+     
 
     DO WHILE (.not.timestepOK)
 
@@ -152,13 +176,93 @@ SUBROUTINE evolve
 
           If (nembryo .eq. 0) dtorque = 0.0d0
 
+!          print*, t/yr, rz(i)/AU, dsigma_cloud(i)*dt
+
           snew(i) = sigma_d(i) + rzm1(i)*drzm1(i)*(3.0*(term1-term2) - dtorque)*dt - sigdot_wind(i)*dt 
+!          snew(i) = sigma_d(i) 
+
+!          If (t/yr .gt. 1.0d5) Then
+!            If ((i .gt. iplanetrad(1) - 10).and.(i.lt.iplanetrad(1)+10)) Then
+!              print*, i, rz(i)/au, sigma_d(i), snew(i),nu_tc(i),alpha_d(i),term1, term2, dtorque
+!            EndIf
+!          EndIf
+
           If (runmode == 'C') Then
+            angmom_disc = snew(i)*pi*(rf(i+1)**2.0d0-rf(i)**2.0d0)*DSqrt(G*massenc(i)*rz(i))
+
             snew(i) = snew(i) + dsigma_cloud(i)*dt
+
+            masstot = snew(i)*pi*(rf(i+1)**2.0d0 - rf(i)**2.0d0)
+   
+            mass_added = dsigma_cloud(i)*dt*pi*(rf(i+1)**2.0d0-rf(i)**2.0d0)
+
+            ro = 4.0d0*pi*azero*rhocloud*G/3.0d0/omega_cloud**2.0d0
+
+            If (azero .gt. 0.0d0) Then
+              M_ro = omega_cloud**2.0d0*ro**2.0d0/G/azero
+              M_ro = M_ro*ro**2.0d0
+
+              vphi = DSqrt(G*M_ro/rz(i)) 
+            Else
+              M_ro = 0.0d0
+
+              vphi = 0.0 
+            EndIf
+ 
+!            print*, i, DSqrt(G*massenc(i)*rf(i)), DSqrt(G*massenc(i+1)*rf(i+1)), vphi*rz(i),'  ang mom'
+!            print*, i, DSqrt(G*massenc(i)*rz(i)), vphi*rf(i)
+!            print*, i, DSqrt(G*massenc_collapse(i)*rz(i))
+!            print*, rz(i)/AU, rf(i)/AU, rf(i+1)/AU, azero/AU
+!            print*, massenc(i)/solarmass, M_ro/solarmass, dMtot/solarmass  
+!            print*, massenc_collapse(i)/solarmass 
+!            print*, sigma_d_collapse(i), snew(i) 
+ 
+            angmom_added = mass_added*DSqrt(G*massenc_collapse(i)*rz(i))
+
+            angmom_tot = angmom_disc + angmom_added
+
+            If ((masstot .gt. 0.0d0).and.(massenc(i) .gt. 0.0d0)) Then
+              radnew = (angmom_tot/masstot)**2.0d0/(G*massenc(i))
+
+              If (radnew .lt. rf(i)) Then
+                print*, i, rf(i)/AU, rz(i)/AU, rf(i+1)/AU, radnew/AU
+                print*, massenc(i)/solarmass, M_ro/solarmass
+              EndIf
+
+!              print*, i, rz(i)/AU, rf(i)/AU, rf(i+1)/AU, radnew/AU, azero/AU
+!              print*, ro/AU, massenc(i)/solarmass, M_ro/solarmass
+              
+!              j = i
+!              do while ((radnew .lt. rz(j)) .and. (j .gt. isr)) 
+!                print*, i,j,  radnew/AU, rz(j)/AU
+!                j = j - 1
+!                angmom_tot = angmom_tot + sigma_d(j)*pi*(rf(j+1)**2.0d0-rf(j)**2.0d0)*Sqrt(G*massenc(j)*rz(j))
+!                masstot = masstot + sigma_d(j)*pi*(rf(j+1)**2.0d0-rf(j)**2.0d0)
+
+!                radnew = (angmom_tot/masstot)**2.0d0/(G*massenc(i))
+!              enddo 
+              
+!              print*, t/dt, i, radnew/AU, rz(i)/AU, rf(i)/AU
+            Else
+              radnew = rz(i)
+            EndIf
+
+            masstot = snew(i)*pi*(rf(i+1)**2.0d0 - rf(i)**2.0d0)
+
+            If (snew(i) .gt. 0.0d0) Then           
+!              print*, snew(i-1), snew(i), frac1, frac2, '  1'
+
+              If (i .gt. isr) Then 
+!                snew(i) = masstot*0.9/(pi*(rf(i+1)**2.0d0 - rf(i)**2.0d0))
+!                snew(i-1) = snew(i-1) + masstot*0.1/(pi*(rf(i)**2.0d0 - rf(i-1)**2.0d0))
+              EndIf
+             
+!              print*, snew(i-1), snew(i)
+            EndIf
           EndIf
 
           if ((accr_on == 'y') .and. (nembryo .gt. 0)) then
-!            snew(i) = snew(i) - sigdot_accr(i)*dt
+            snew(i) = snew(i) - sigdot_accr(i)*dt
             mass_accr = mass_accr + twopi*sigdot_accr(i)*rz(i)*(rz(i+1)-rz(i))*dt
           endif
           
@@ -175,6 +279,12 @@ SUBROUTINE evolve
             if ((sigma_d(i) .ne. 0.0d0).and.(cp .ne. 0.0d0)) Then
               Tnew(i) = T_d(i) + 2.0*dt*(heatfunc(i)-coolfunc(i))/(cp*sigma_d(i)) - vr*dTcdr*dt
               Tnew(i) = Tnew(i) + E_acc(i)*dsigma_cloud(i)*dt/(cp*sigma_d(i)) 
+              If (Tnew(i) .gt. T_d(i)*1.5d0) Then
+                Tnew(i) = T_d(i)*1.5d0
+              EndIf
+              If (Tnew(i) .lt. T_d(i)*0.75d0) Then
+                Tnew(i) = T_d(i)*0.75d0
+              EndIf
             else
               Tnew(i) = T_d(i)
             endif
@@ -186,8 +296,11 @@ SUBROUTINE evolve
           if (Tnew(i).gt.1000.0d0) Then
             Tnew(i) = 1000.0d0
           endif
+          if (snew(i) .lt. 0.1d0) Then
+            Tnew(i) = T_source(i)
+          endif
 
-          if (snew(i) .lt. 0.0d0) snew(i) = 0.0d0
+          if (snew(i) .lt. 1.0d-12) snew(i) = 0.0d0
 !          if (snew(i) .lt. 1.0d-15) snew(i) = 1.0d-15
        enddo    
 
@@ -227,25 +340,36 @@ SUBROUTINE evolve
       EndIf
     enddo
 
-    if (massindisc1-(massindisc2-mass_added) > 0.0d0) then
-      If (runmode == 'C') Then
-        mstar = mstar + dmstar_cloud*dt
-      EndIf
+    If (runmode == 'C') Then
+      mstar = mstar + dmstar_cloud*dt
+      mstar_collapse = mstar_collapse + dmstar_cloud*dt
+    EndIf
 
+    if (massindisc1-(massindisc2-mass_added) .ge. 0.0d0) then
       mstar = mstar + (massindisc1-(massindisc2-mass_added))
     endif
+
+    dMtot = dMtot + mdot*dt
 
 ! Copy back surface density
 
     mdisc = 0.0d0
+    sigma_d_max = 0.0d0
     do i = isr, ier
        sigma_d(i) = snew(i)
+       If (sigma_d(i) .gt. sigma_d_max) sigma_d_max = sigma_d(i)
        T_d(i) = Tnew(i)
 
-       mdisc = mdisc + twopi*sigma_d(i)*rz(i)*(rz(i+1)-rz(i))
+       mdisc = mdisc + twopi*sigma_d(i)*rz(i)*(rf(i+1)-rf(i))
+
+       sigma_d_collapse(i) = sigma_d_collapse(i) + dsigma_cloud(i)*dt
 
 !       T_d(i) = Tnew(i)
     enddo
+
+    if (sigma_d_max .lt. 0.1d0) Then
+      exit
+    endif
 
     T_d(isr-1) = T_d(isr)
     nu_tc(isr-1) = 0.0d0
@@ -255,9 +379,13 @@ SUBROUTINE evolve
     T_d(ier+1) = T_d(ier)
 
     do iplanet = 1, nembryo
-      If (t/yr .gt. (embryo(iplanet)%t_form/yr + 2.5d4)) Then
+      If (runmode .eq. 'C') Then
+        If (t/yr .gt. (embryo(iplanet)%t_form/yr + tdelay_planettorque)) Then
+          call migrate_planets
+        EndIf
+      Else If (t/yr .gt. tdelay_planettorque) Then
         call migrate_planets
-      EndIf       
+      End If       
       embryo(iplanet)%a = ap(iplanet)
       mp(iplanet) = embryo(iplanet)%m
     enddo 
@@ -312,7 +440,7 @@ SUBROUTINE evolve
        tdump = 0.0
     endif
 
-    If (t/yr .gt. 3.0d5) Then
+    If (t/yr .gt. 3.0d7) Then
       If (nembryo .eq. 0) Then
         exit
       EndIf

@@ -39,7 +39,7 @@ do i = isr, ier
    ! Compute minimum viscous timestep
    dr  = (rf(i+1)-rf(i))
    dr2 = dr**2
-   if (nu_tc(i) .gt. 0.0d0) then
+   if ((nu_tc(i) .gt. 0.0d0) .and. (sigma_d(i) .gt. 0.0d0)) then
      dtvisc  = C0 * dr2 / (6.0d0 * nu_tc(i))
    else
      dtvisc = 1.0d30
@@ -47,7 +47,7 @@ do i = isr, ier
    dtmin_visc = min(dtmin_visc,dtvisc)
 !   dtmin = min(dtmin,0.1*tcool(i))
 
-!   print*, i, dtvisc, dtmin_visc, nu_tc(i)  
+!   print*, i, t, dtvisc, dtmin_visc, dr2, nu_tc(i), alpha_d(i), cs_d(i), sigma_d(i)
 
    planetchoice = 'y'
 

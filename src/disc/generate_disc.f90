@@ -15,6 +15,8 @@ integer :: i, nzeros, ntries
 real :: mtry, mdot_try,sigma_old,T,dT,fine
 real :: beta
 
+logical :: file_exists
+
 mtry = 0.0
 i = 0
 
@@ -29,11 +31,19 @@ print*, tmax, t_disc_dump, nfiles, nzeros, snapshotformat
 
 fg = 0.02 + ran2(iseed)*0.01
 
-q_disc = q_disc0 + ran2(iseed)*0.2
+q_disc = q_disc0 + ran2(iseed)*0.35
+!q_disc = q_disc0
 
 mdisc = q_disc*mstar
-mdotvisc = mdotvisc0 + 2.0d0*ran2(iseed)
+mdotvisc = mdotvisc0 + 3.0d0*ran2(iseed)
+!mdotvisc = mdotvisc0
 mdotvisc = 10.0**(mdotvisc)*umass/yr
+
+If (stell_irr .eq. 'n') Then
+  Tirr = Tirr0 + ran2(iseed)*20.0
+EndIf
+
+alpha_visc = alpha_visc0 + ran2(iseed)*0.004d0 
 
 print*, 'Generating disc for star ',istar, mstar/umass
 
@@ -41,14 +51,27 @@ sigma_old = 1.0e6
 maxstep = 1.0d0
 
 Lx = Lx_0 - Lx_0*ran2(iseed)/4.0d0
-
 print*, 'Luminosity of central star if 1 MSun: ', Lx 
 
 If (runmode == 'C') Then
   call setup_cloud
 EndIf
 
+print*, TRIM(prefix)//'.log'
+
+inquire(file=TRIM(prefix)//'.log', exist=file_exists)
+
+print*, file_exists
+
+If (.not. file_exists) Then
+  open(itime,file=TRIM(prefix)//'.log',access='append',status='unknown')
+  write(itime,*) mstar/umass, mdisc/umass, q_disc, mdotvisc*yr/umass, Tirr, alpha_visc, Lx
+  close(itime)
+EndIf
+
+
 IF(allocated(sigma_d)) deallocate(sigma_d)
+IF(allocated(sigma_d_collapse)) deallocate(sigma_d_collapse)
 IF(allocated(snew)) deallocate(snew)
 IF(allocated(dsigma_cloud)) deallocate(dsigma_cloud)
 IF(allocated(fM)) deallocate(fM)
@@ -79,6 +102,7 @@ IF(allocated(heatfunc)) deallocate(heatfunc)
 IF(allocated(Q)) deallocate(Q)
 
 allocate(sigma_d(nrannuli))
+allocate(sigma_d_collapse(nrannuli))
 allocate(snew(nrannuli))
 allocate(dsigma_cloud(nrannuli))
 allocate(fM(nrannuli))
@@ -163,6 +187,7 @@ do i = 1, nrannuli
   T_d(i) = T_source(i)
 enddo
 
+sigma_d_collapse(:) = 0.0d0
 dsigma_cloud(:) = 0.0d0
 fM(:) = 0.0d0
 E_acc(:) = 0.0d0
@@ -242,6 +267,7 @@ If (runmode .ne. 'C') then
         if (fine .lt. 1.0d-10) exit 
         ntries = 0
       ENDIF
+
     ENDDO
 
 !	Check for MRI activation
@@ -254,14 +280,16 @@ If (runmode .ne. 'C') then
 !	print*, 'MRI active ', T, alpha, sigma
 !ENDIF
 
-    sigma_d(i+1) = sigma_old
 !  MJEANS(i) = 4.0*1.412*pi*pi*pi/(3.0*G)
     mjeans(i) = Sqrt(3.0)*pi*pi*pi*Sqrt(Qcrit)/(32.0*G) 
     mjeans(i) = mjeans(i)*cs_d(i)*cs_d(i)*cs_d(i)/(omega_d(i)*Sqrt(1.0+4.47*Sqrt(alpha_d(i))))
 
 ! old mjeans
-!  mjeans(i) = 4.0*sqrt(2.0)*pi*pi*pi*sqrt(Qcrit)/(3.0*G)
-!  mjeans(i) = mjeans(i)*cs_d(i)*cs_d(i)*cs_d(i)/(omega_d(i)*(1.0+4.47*sqrt(alpha_d(i))))
+!    mjeans(i) = 4.0*sqrt(2.0)*pi*pi*pi*sqrt(Qcrit)/(3.0*G)
+!    mjeans(i) = mjeans(i)*cs_d(i)*cs_d(i)*cs_d(i)/(omega_d(i)*(1.0+4.47*sqrt(alpha_d(i))))
+
+!    mjeans(i) = pi*cs_d(i)*cs_d(i)*cs_d(i)/6.0d0/G**(3.0d0/2.0d0)
+!    mjeans(i) = mjeans(i)/(sigma_d(i)/(2.0d0*H_d(i)))**0.5d0
 
     ljeans(i) = cs_d(i)*sqrt(3.0d0*pi/32.0d0/G/rhomid)
 
@@ -280,7 +308,6 @@ If (runmode .ne. 'C') then
 !	Calculate enclosed Mass and mass ratio
     If (r_d(i) .gt. 5.0d0*udist) Then
       mtry = mtry + twopi*r_d(i)*sigma_d(i)*dr
-
     EndIf
 
     IF(i==nrannuli) THEN
@@ -301,6 +328,10 @@ If (runmode .ne. 'C') then
   print*, 'Accretion Rate = ', mdotvisc*yr/umass, mdot_try*yr/umass
   print*, 'Rout = ', rout/AU
   print*, 'fg = ', fg
+  print*, 'Viscous alpha = ', alpha_visc
+  print*, 'Tirr = ', Tirr
+
+  print*, sigma_d(irout), sigma_d(irout+1), irout
 
   T_d(ier+1) = T_d(ier)
 endif

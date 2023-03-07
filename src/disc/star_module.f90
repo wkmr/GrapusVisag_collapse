@@ -1,5 +1,5 @@
 MODULE stardata
-  integer, parameter :: nrannuli = 200
+  integer, parameter :: nrannuli = 500
   real, parameter :: tolerance = 1.0e-3
 
   integer,parameter :: idisc = 5
@@ -12,10 +12,11 @@ MODULE stardata
   integer :: Nstar, istar,irout,irfrag, iseed, imodel
   integer :: isr, ier
   real :: mstar,mstar0,mdisc,q_disc,q_disc0,dr,rin,rout, rtrunc, rtruncmax
+  real :: mstar_collapse
   real :: mdotvisc,mdotvisc0,rhomid,rfrag,rmax,tmax
-  real :: Lstar, Tirr
+  real :: Lstar, Tirr0, Tirr
   real :: maxstep
-  real :: alpha_visc, alpha_frag, fragprob
+  real :: alpha_visc0, alpha_visc, alpha_frag, fragprob
   character(100) :: discfile,datafilepath
   character(1) :: truncate_disc,debug
   character(1) :: stell_irr
@@ -27,6 +28,7 @@ MODULE stardata
   real, allocatable, dimension(:) :: rf,rf1_2,drfm1
 
   real,allocatable,dimension(:) :: sigma_d, cs_d, omega_d, gamma_J
+  real, allocatable, dimension(:) :: sigma_d_collapse
   real,allocatable,dimension(:) :: betac_d, mjeans, ljeans, r_d, H_d,alpha_d, alpha_g
   real,allocatable, dimension(:) :: T_d, kappa_d, gamma_d, tau_d,nu_d,nu_tc
   real,allocatable, dimension(:) :: T_source, sigdot, coolfunc, heatfunc, Q, tcool
@@ -42,6 +44,7 @@ MODULE stardata
 !$OMP threadprivate(isr,ier,mstar,mdisc,q_disc,dr,rout,rtrunc,rtruncmax)
 !$OMP threadprivate(mdotvisc,rhomid,rfrag,rmax,maxstep,discfile,truncate_disc)
 !$OMP threadprivate(rz,rzm1,rz1_2,drzm1,rf,rf1_2,drfm1,sigma_d,cs_d,omega_d,gamma_J)
+!$OMP threadprivate(sigma_d_collapse,mstar_collapse)
 !$OMP threadprivate(betac_d,mjeans,ljeans,r_d,H_d,alpha_d,alpha_g,T_d,kappa_d,gamma_d,tau_d)
 !$OMP threadprivate(nu_d,nu_tc,T_source,sigdot,coolfunc,heatfunc,Q,tcool,snew,Tnew)
 !$OMP threadprivate(timemod,mstar_mod,r_mod,sigma_mod,nu_mod,Tc_mod,alpha_mod,tau_mod)

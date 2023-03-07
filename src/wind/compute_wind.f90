@@ -35,9 +35,13 @@ If (mstar .gt. 0.25d0*solarmass) Then
 
    if(rz(i)/AU > rwind_xray) then
      sigdot_wind(i) = rwind_xray*(sigdot_diff + sigdot_dir)
+!     sigdot_wind(i) = 0.0d0
    else
      sigdot_wind(i) = sigdotxray
    endif
+  
+!   sigdot_wind(i) = 10.0d0*(sigdot_diff + sigdot_dir)
+
   enddo
 Else
   sigdot_wind(:) = 0.0d0
