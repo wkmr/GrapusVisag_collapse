@@ -97,13 +97,15 @@ do k = isr, ier
   endif
 enddo
 
-mdotvisc = mdotvisc/numpts
+If (numpts .gt. 0) Then
+  mdotvisc = mdotvisc/numpts
+EndIf
 
 if (Mdot_env_max*dt .gt. M_feed) then
   Mdot_env_max = M_feed/dt
 endif
 
-Mdot_env_max = Mdot_env_max*0.25d0
+!Mdot_env_max = Mdot_env_max*0.25d0
 
 If (accr_on_disc == 'y') then
   Mdot_env_max = Mdot_env_max + 0.01*mdotvisc

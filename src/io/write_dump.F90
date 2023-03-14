@@ -77,22 +77,35 @@ subroutine write_dump(t)
 !endif
 
 if(nplanet .gt. 0) then
-open(iprofomp, file=TRIM(prefix)//'_planets.'//fileno,status='unknown')
-write(iprofomp,*)t/yr,nplanet,nactive
-do iplanet=1,nplanet
-    write(iprofomp,*) alive(iplanet),mp(iplanet)/mjup, &
+  open(iprofomp, file=TRIM(prefix)//'_planets.'//fileno,status='unknown')
+  write(iprofomp,*)t/yr,nplanet,nactive
+  do iplanet=1,nplanet
+     write(iprofomp,*) alive(iplanet),mp(iplanet)/mjup, &
          ap(iplanet)/AU, tmig(iplanet)/yr, embryo(iplanet)%mcore/mjup, &
          embryo(iplanet)%r/rjup, embryo(iplanet)%rcore/rjup
-enddo
-close(iprofomp)
+  enddo
+  close(iprofomp)
 
-open(itorqueomp,file=TRIM(prefix)//'_torque.'//fileno,status='unknown')
-do i=isr,ier
-   write(itorqueomp,*) rz(i)/AU, 0.1*H_d(i)/rz(i), lambdaI(1,i), lambdaII(1,i), &
-        total_planet_torque(i), torque_term(i), total_planet_torque(i+1)-total_planet_torque(i)
-enddo
-close(itorqueomp)
+  open(itorqueomp,file=TRIM(prefix)//'_torque.'//fileno,status='unknown')
+  do i=isr,ier
+     write(itorqueomp,*) rz(i)/AU, 0.1*H_d(i)/rz(i), lambdaI(1,i), lambdaII(1,i), &
+          total_planet_torque(i), torque_term(i), total_planet_torque(i+1)-total_planet_torque(i)
+  enddo
+  close(itorqueomp)
 
+endif
+
+if((nplanet .eq. 0).and.(runmode .eq. 'C')) then
+  open(iprofomp, file=TRIM(prefix)//'_planets.'//fileno,status='unknown')
+  write(iprofomp,*)t/yr,nplanet,nactive
+  write(iprofomp,*) 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+  close(iprofomp)
+
+  open(itorqueomp,file=TRIM(prefix)//'_torque.'//fileno,status='unknown')
+  do i=isr,ier
+     write(itorqueomp,*) rz(i)/AU, 0.1*H_d(i)/rz(i), 0.0, 0.0, 0.0, 0.0, 0.0
+  enddo
+  close(itorqueomp)
 endif
 
 !if(nplanet .eq. 0) then

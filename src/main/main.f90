@@ -102,7 +102,7 @@ call initial
 
       print*, nembryo, nplanet
 
-      If (nembryo.gt.0) then
+      If ((nembryo.gt.0) .or. (runmode .eq. 'C')) then
         call write_dump(0.0) 
         CALL evolve
       else

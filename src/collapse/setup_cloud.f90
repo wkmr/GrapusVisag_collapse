@@ -9,12 +9,12 @@ subroutine setup_cloud
 
   logical :: file_exists
 
-  Mcloud = (Mcloud_0 + Mcloud_0/4.0d0 - 0.5d0*Mcloud_0*ran2(iseed))
+  Mcloud = (Mcloud_0 + 1.75d0*ran2(iseed))
   Mcloud = Mcloud*solarmass
-  Rcloud = (Rcloud_0 + Rcloud_0/2.0d0 - 1.3d0*Rcloud_0*ran2(iseed))
+  Rcloud = (Rcloud_0 + 0.1d0*ran2(iseed))
   Rcloud = Rcloud*pc
 !  f_cloud = f_cloud_0 + 2.0d0*f_cloud_0 - 2.0d0*f_cloud_0*ran2(iseed)
-  f_cloud = f_cloud_0 + 0.1d0 - 0.1d0*ran2(iseed)
+  f_cloud = f_cloud_0 + 0.5d0*ran2(iseed)
 !
 !  Mcloud = Mcloud_0*solarmass
 !  Rcloud = Rcloud_0*pc

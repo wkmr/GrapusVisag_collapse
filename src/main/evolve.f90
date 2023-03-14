@@ -224,10 +224,10 @@ SUBROUTINE evolve
             If ((masstot .gt. 0.0d0).and.(massenc(i) .gt. 0.0d0)) Then
               radnew = (angmom_tot/masstot)**2.0d0/(G*massenc(i))
 
-              If (radnew .lt. rf(i)) Then
-                print*, i, rf(i)/AU, rz(i)/AU, rf(i+1)/AU, radnew/AU
-                print*, massenc(i)/solarmass, M_ro/solarmass
-              EndIf
+!              If (radnew .lt. rf(i)) Then
+!                print*, i, rf(i)/AU, rz(i)/AU, rf(i+1)/AU, radnew/AU
+!                print*, massenc(i)/solarmass, M_ro/solarmass
+!              EndIf
 
 !              print*, i, rz(i)/AU, rf(i)/AU, rf(i+1)/AU, radnew/AU, azero/AU
 !              print*, ro/AU, massenc(i)/solarmass, M_ro/solarmass
@@ -249,16 +249,16 @@ SUBROUTINE evolve
 
             masstot = snew(i)*pi*(rf(i+1)**2.0d0 - rf(i)**2.0d0)
 
-            If (snew(i) .gt. 0.0d0) Then           
+!            If (snew(i) .gt. 0.0d0) Then           
 !              print*, snew(i-1), snew(i), frac1, frac2, '  1'
 
-              If (i .gt. isr) Then 
+!              If (i .gt. isr) Then 
 !                snew(i) = masstot*0.9/(pi*(rf(i+1)**2.0d0 - rf(i)**2.0d0))
 !                snew(i-1) = snew(i-1) + masstot*0.1/(pi*(rf(i)**2.0d0 - rf(i-1)**2.0d0))
-              EndIf
+!              EndIf
              
 !              print*, snew(i-1), snew(i)
-            EndIf
+!            EndIf
           EndIf
 
           if ((accr_on == 'y') .and. (nembryo .gt. 0)) then
@@ -367,7 +367,7 @@ SUBROUTINE evolve
 !       T_d(i) = Tnew(i)
     enddo
 
-    if (sigma_d_max .lt. 0.1d0) Then
+    if ((sigma_d_max .lt. 0.1d0) .and. (t/yr .gt. 1.0d6)) Then
       exit
     endif
 
@@ -383,7 +383,7 @@ SUBROUTINE evolve
         If (t/yr .gt. (embryo(iplanet)%t_form/yr + tdelay_planettorque)) Then
           call migrate_planets
         EndIf
-      Else If (t/yr .gt. tdelay_planettorque) Then
+      Else If (t/yr .gt. (tdelay_planettorque)) Then
         call migrate_planets
       End If       
       embryo(iplanet)%a = ap(iplanet)
@@ -394,7 +394,7 @@ SUBROUTINE evolve
     tout = tout + dt
 
     If (tout/3.15d7 .gt. t_disc_dump/10.0d0) Then
-        print*, t/3.15d7, dt/3.15d7, sigma_d(isr), mstar/solarmass, mdisc/solarmass
+        print*, t/3.15d7, dt/3.15d7, sigma_d(isr), mstar/solarmass, mdisc/solarmass, mass_accr/solarmass
 !        print*, embryo(1)%icurrent, embryo(1)%m/mjup, embryo(1)%r/rjup, embryo(1)%a/au, embryo(1)%t_cool0/yr
 !        print*, embryo(1)%T, embryo(1)%mcore/mearth, embryo(1)%rcore/rearth
 !        print*, 0.8d0*au*kappa_star**0.5d0*(10.0d4*yr/t)**0.5d0/au
@@ -440,7 +440,7 @@ SUBROUTINE evolve
        tdump = 0.0
     endif
 
-    If (t/yr .gt. 3.0d7) Then
+    If (t/yr .gt. 3.0d5) Then
       If (nembryo .eq. 0) Then
         exit
       EndIf

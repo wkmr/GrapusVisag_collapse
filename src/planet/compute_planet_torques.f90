@@ -39,7 +39,6 @@ subroutine compute_planet_torques(t)
 
      do i = isr,ier
 
-
         !*****************************************************
         ! Compute the Type II specific torque at this radius
         !*****************************************************
@@ -58,19 +57,25 @@ subroutine compute_planet_torques(t)
 !           soften = .false.
         endif
 
-        lambdaII(iplanet,i) = 0.5*mratio*mratio/(deltap)**4
-!        lambdaII(iplanet,i) = 0.1*mratio*mratio/(deltap)**4.0d0
-!        lambdaII(iplanet,i) = 0.1*mratio*G*mp(iplanet)/(deltap)**4.0d0
-        if(rz(i) < ap(iplanet)) then
-           lambdaII(iplanet,i) = -lambdaII(iplanet,i)*(rz(i))**4
-!           lambdaII(iplanet,i) = -lambdaII(iplanet,i)*(ap(iplanet))**3.0d0 
-        else
-           lambdaII(iplanet,i) = lambdaII(iplanet,i)*(ap(iplanet))**4
-!           lambdaII(iplanet,i) = lambdaII(iplanet,i)*(ap(iplanet))**3.0d0 
+        lambdaII(iplanet,i) = 0.0d0
+        If (deltap .ne. 0.0d0) Then
+          lambdaII(iplanet,i) = 0.5*mratio*mratio/(deltap)**4
+!          lambdaII(iplanet,i) = 0.1*mratio*mratio/(deltap)**4.0d0
+!          lambdaII(iplanet,i) = 0.1*mratio*G*mp(iplanet)/(deltap)**4.0d0
+          if(rz(i) < ap(iplanet)) then
+             lambdaII(iplanet,i) = -lambdaII(iplanet,i)*(rz(i))**4
+!             lambdaII(iplanet,i) = -lambdaII(iplanet,i)*(ap(iplanet))**3.0d0 
+          else
+             lambdaII(iplanet,i) = lambdaII(iplanet,i)*(ap(iplanet))**4
+!             lambdaII(iplanet,i) = lambdaII(iplanet,i)*(ap(iplanet))**3.0d0 
+          endif
         endif
 
         if(soften) then
-           softenfactor = abs(rz(i)-ap(iplanet))/deltamax
+           softenfactor = 0.0001
+           If (deltamax .gt. 0.0d0) Then
+             softenfactor = abs(rz(i)-ap(iplanet))/deltamax
+           EndIf
            if(softenfactor < 0.0001) softenfactor = 0.0001           
            lambdaII(iplanet,i)=lambdaII(iplanet,i)*softenfactor           
         endif
@@ -167,14 +172,14 @@ subroutine compute_planet_torques(t)
      if(abs(total_planet_torque(i)) > 0.1*aspectratio) then
         total_planet_torque(i) = 0.1*aspectratio*total_planet_torque(i)/abs(total_planet_torque(i))
      endif
- 
-   enddo
-       
+   
+  enddo
 
   ! Set brief time delay for planet torque activation
 
-  if(t < tdelay_planettorque*yr) then
+  if (t .lt. tdelay_planettorque*yr) then
      total_planet_torque(:) = total_planet_torque(:)*1.0e-30
+     total_planet_torque(:) = 0.0d0
   endif
 
    torque_term(:) = 2.0*omega_d(:)*rf(:)*rf(:)*sigma_d(:)*total_planet_torque(:)

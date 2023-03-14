@@ -23,27 +23,31 @@ SUBROUTINE generate_embryos(t)
   IF(allocated(sigdot_accr)) deallocate(sigdot_accr)
   allocate(sigdot_accr(nrannuli))
 
+  sigdot_accr(:) = 0.0d0
+
   i=0
 
   DO WHILE(i<nrannuli) 
      i=i+1
 
      IF ((alpha_d(i) .gt. alpha_frag).and.(rz(i)/AU .lt. 400.0d0)) THEN
-       call random_number(rnum)
-       If (MJeansdot == 'y') Then
-        IF(gamma_j(i)>-10.0 .and. gamma_j(i)<0.0) THEN
-          If (rnum .gt. fragprob) Then
-            rfrag = r_d(i)
-            irfrag = i
-            exit
+       If ((alpha_d(i-1) .gt. alpha_frag) .and. (alpha_d(i+1) .gt. alpha_frag)) Then
+         call random_number(rnum)
+         If (MJeansdot == 'y') Then
+          IF(gamma_j(i)>-10.0 .and. gamma_j(i)<0.0) THEN
+            If (rnum .gt. fragprob) Then
+              rfrag = r_d(i)
+              irfrag = i
+              exit
+            EndIf
           EndIf
-        EndIf
-       EndIf
-       If (MJeansdot == 'n') Then
-         If (rnum .gt. fragprob) Then
-           rfrag = r_d(i)
-           irfrag = i
-           exit
+         EndIf
+         If (MJeansdot == 'n') Then
+           If (rnum .gt. fragprob) Then
+             rfrag = r_d(i)
+             irfrag = i
+             exit
+           EndIf
          EndIf
        EndIf
      EndIf
@@ -55,6 +59,7 @@ SUBROUTINE generate_embryos(t)
      return
   ELSE
      write(*,'(A,X,F10.2,A,X,I5)') 'Fragmentation radius is ',rfrag/udist, ' AU: annulus ',irfrag
+     print*, 'Alpha value at fragmentation position is : ', alpha_d(i) 
   ENDIF
 
   ! Generate number of possible embryos
