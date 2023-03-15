@@ -46,7 +46,7 @@ MODULE stardata
 !$OMP threadprivate(rz,rzm1,rz1_2,drzm1,rf,rf1_2,drfm1,sigma_d,cs_d,omega_d,gamma_J)
 !$OMP threadprivate(sigma_d_collapse,mstar_collapse)
 !$OMP threadprivate(betac_d,mjeans,ljeans,r_d,H_d,alpha_d,alpha_g,T_d,kappa_d,gamma_d,tau_d)
-!$OMP threadprivate(nu_d,nu_tc,T_source,sigdot,coolfunc,heatfunc,Q,tcool,snew,Tnew)
+!$OMP threadprivate(nu_d,nu_tc,Tirr,T_source,sigdot,coolfunc,heatfunc,Q,tcool,snew,Tnew)
 !$OMP threadprivate(timemod,mstar_mod,r_mod,sigma_mod,nu_mod,Tc_mod,alpha_mod,tau_mod)
 
 CONTAINS

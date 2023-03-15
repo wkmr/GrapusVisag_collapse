@@ -51,7 +51,7 @@
 
   diskmass = 0.0d0
 
-  If (runmode == 'C') then
+  If (runmode == 'C1') then
     call sigma_mdot(t)
     call Eacc_calc(t)  
   Else
@@ -202,7 +202,7 @@
   alpha_d(:) = alpha_g(:)
 
   cs_d(1) = cs_d(2)
-  if ((runmode == 'C') .and. (nembryo == 0) .and. (mstar .gt. 0.0d0)) Then
+  if ((runmode == 'C1') .and. (nembryo == 0) .and. (mstar .gt. 0.0d0)) Then
  
     where ((omega_d > 0.0d0) .and. (sigma_d > 0.0d0))
       mjeans(:) = Sqrt(3.0)*pi*pi*pi*Sqrt(Qcrit)/(32.0d0*G)

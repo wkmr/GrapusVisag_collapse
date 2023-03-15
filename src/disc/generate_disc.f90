@@ -53,7 +53,7 @@ maxstep = 1.0d0
 Lx = Lx_0 - Lx_0*ran2(iseed)/4.0d0
 print*, 'Luminosity of central star if 1 MSun: ', Lx 
 
-If (runmode == 'C') Then
+If (runmode == 'C1') Then
   call setup_cloud
 EndIf
 
@@ -195,7 +195,7 @@ E_acc(:) = 0.0d0
 i = 0
 mtry = 0.0d0
 
-If (runmode .ne. 'C') then
+If (runmode .ne. 'C1') then
 
   DO WHILE(mtry < mdisc .and. i<nrannuli-1)
 
@@ -319,7 +319,7 @@ If (runmode .ne. 'C') then
 
 EndIf
 
-If (runmode .ne. 'C') then
+If (runmode .ne. 'C1') then
   rout = r_d(i)
   irout = i
 
@@ -356,7 +356,7 @@ endif
 !  write(25,*) i, r_d(i), sigma_d(i), cs_d(i), T_d(i), tau_d(i), kappa_d(i), alpha_d(i)
 !enddo
 
-If (runmode .ne. 'C') Then
+If (runmode .ne. 'C1') Then
   mtry = 0.0d0
   do i = 1, nrannuli-1
     mtry = mtry + 2.0d0*pi*r_d(i)*sigma_d(i)*(r_d(i+1) - r_d(i))

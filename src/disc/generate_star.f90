@@ -7,7 +7,7 @@ use embryodata
 ! For now, simply postulate star mass (in solar masses)
 ! (TODO - stellar mass function?)
 
-If (runmode .ne. 'C') then
+If (runmode .ne. 'C1') then
   mstar = 10.0d0*umass
   do while (mstar .gt. 2.0d0*umass) 
 !     mstar = (mstar0 + mstar0*(1.0 - ran2(iseed))/1.0)*umass

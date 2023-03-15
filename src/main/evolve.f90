@@ -109,7 +109,7 @@ SUBROUTINE evolve
 
        heatfunc(:) = 9.0d0*nu_tc(:)*sigma_d(:)*omega_d(:)*omega_d(:)/8.0d0 
    
-       If ((runmode == 'C') .and. (t .lt. 2.0d0*tff)) Then
+       If ((runmode == 'C1') .and. (t .lt. 2.0d0*tff)) Then
          call setup_wind
        EndIf
        call compute_wind
@@ -117,7 +117,7 @@ SUBROUTINE evolve
        Mdotwind = 0.0d0
        mass_accr = 0.0d0
 
-       If (runmode == 'C') then
+       If (runmode == 'C1') then
          call sigma_mdot(t)
          call Eacc_calc(t)
        Else
@@ -187,7 +187,7 @@ SUBROUTINE evolve
 !            EndIf
 !          EndIf
 
-          If (runmode == 'C') Then
+          If (runmode == 'C1') Then
             angmom_disc = snew(i)*pi*(rf(i+1)**2.0d0-rf(i)**2.0d0)*DSqrt(G*massenc(i)*rz(i))
 
             snew(i) = snew(i) + dsigma_cloud(i)*dt
@@ -275,7 +275,7 @@ SUBROUTINE evolve
           else
             cp = cs_d(i)**2.0d0/(T_source(i)*1.667d0*(1.667d0-1.0d0))
           endif
-          if (((runmode=='g2').or.(runmode=='C')).and.(alpha_d(i) .le. (alpha_visc + 1.0e-8))) then
+          if (((runmode=='g2').or.(runmode=='C1')).and.(alpha_d(i) .le. (alpha_visc + 1.0e-8))) then
             if ((sigma_d(i) .ne. 0.0d0).and.(cp .ne. 0.0d0)) Then
               Tnew(i) = T_d(i) + 2.0*dt*(heatfunc(i)-coolfunc(i))/(cp*sigma_d(i)) - vr*dTcdr*dt
               Tnew(i) = Tnew(i) + E_acc(i)*dsigma_cloud(i)*dt/(cp*sigma_d(i)) 
@@ -333,14 +333,14 @@ SUBROUTINE evolve
 
       diskmass = massindisc2
 
-      If (runmode == 'C') Then
+      If (runmode == 'C1') Then
         mass_added = mass_added + 2.0d0*pi*rz(i)*dsigma_cloud(i)*dt*(rf(i+1)-rf(i))
       Else
         mass_added = 0.0d0
       EndIf
     enddo
 
-    If (runmode == 'C') Then
+    If (runmode == 'C1') Then
       mstar = mstar + dmstar_cloud*dt
       mstar_collapse = mstar_collapse + dmstar_cloud*dt
     EndIf
@@ -379,7 +379,7 @@ SUBROUTINE evolve
     T_d(ier+1) = T_d(ier)
 
     do iplanet = 1, nembryo
-      If (runmode .eq. 'C') Then
+      If (runmode .eq. 'C1') Then
         If (t/yr .gt. (embryo(iplanet)%t_form/yr + tdelay_planettorque)) Then
           call migrate_planets
         EndIf

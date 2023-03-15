@@ -95,7 +95,7 @@ if(nplanet .gt. 0) then
 
 endif
 
-if((nplanet .eq. 0).and.(runmode .eq. 'C')) then
+if((nplanet .eq. 0).and.(runmode .eq. 'C1')) then
   open(iprofomp, file=TRIM(prefix)//'_planets.'//fileno,status='unknown')
   write(iprofomp,*)t/yr,nplanet,nactive
   write(iprofomp,*) 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0

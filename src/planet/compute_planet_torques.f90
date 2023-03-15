@@ -89,13 +89,15 @@ subroutine compute_planet_torques(t)
            
         ! Integrate the torque over all radii
 
-        if(rz(i)<ap(iplanet)) then
-!           typeInorm = typeInorm + exp(-deltap/(H_d(i)+rhill))*sigma_d(i)/drzm1(i)    
-           typeInorm = typeInorm + 2.0d0*pi*rz(i)*exp(-deltap/(H_d(i)+rhill))*sigma_d(i)/drzm1(i)        
-        else
-!           typeInorm = typeInorm + exp(-deltap/(H_d(i)+rhill))*sigma_d(i)/drzm1(i)    
-           typeInorm = typeInorm + 2.0d0*pi*rz(i)*exp(-deltap/(H_d(i)+rhill))*sigma_d(i)/drzm1(i)        
-        endif
+        if ((H_d(i)+rhill) .gt. 0.0d0) Then 
+          if(rz(i)<ap(iplanet)) then
+!             typeInorm = typeInorm + exp(-deltap/(H_d(i)+rhill))*sigma_d(i)/drzm1(i)    
+             typeInorm = typeInorm + 2.0d0*pi*rz(i)*exp(-deltap/(H_d(i)+rhill))*sigma_d(i)/drzm1(i)        
+          else
+!             typeInorm = typeInorm + exp(-deltap/(H_d(i)+rhill))*sigma_d(i)/drzm1(i)    
+             typeInorm = typeInorm + 2.0d0*pi*rz(i)*exp(-deltap/(H_d(i)+rhill))*sigma_d(i)/drzm1(i)        
+          endif
+        endif  
        
      enddo
 

@@ -31,8 +31,8 @@ INTERFACE
    SUBROUTINE generate_disc
    END SUBROUTINE generate_disc
 
-   SUBROUTINE generate_embryos
-   END SUBROUTINE generate_embryos
+!   SUBROUTINE generate_embryos
+!   END SUBROUTINE generate_embryos
 
    SUBROUTINE evolve
    END SUBROUTINE evolve
@@ -48,11 +48,11 @@ call initial
 
 ! Loop over total number of stars
 !$OMP PARALLEL default(private) &
-!$OMP shared(Nstar,mstar0,prefix_orig,runmode,debug,multishot,tsnap,maxsnap,alpha_visc0,alpha_visc,Lx_0) &
+!$OMP shared(Nstar,mstar0,prefix_orig,runmode,debug,multishot,tsnap,maxsnap,alpha_visc0,Lx_0) &
 !$OMP shared(alpha_frag,MJeansdot,fragprob) &
 !$OMP shared(q_disc0,mdotvisc0) &
 !$OMP shared(nbody,datafilepath,tmax,t_disc_dump,iseed,rin) &
-!$OMP shared(stell_irr, Lstar, Tirr0, Tirr) &
+!$OMP shared(stell_irr, Lstar, Tirr0) &
 !$OMP shared(Mcloud_0, Rcloud_0, f_cloud_0, t_frag) &
 !$OMP shared(p_kap,fragsep,initialecc,c_mig,c_gap,c_collapse,core_feedback) &
 !$OMP shared(accr_on, accr_on_disc)
@@ -84,9 +84,9 @@ call initial
 !      HERE
      call setup_wind
 
-     if (runmode .ne. 'C') Then
+     if (runmode .ne. 'C1') Then
     
-       call generate_embryos
+       call generate_embryos(0.0)
 
        call setup_planets
    
@@ -102,7 +102,7 @@ call initial
 
       print*, nembryo, nplanet
 
-      If ((nembryo.gt.0) .or. (runmode .eq. 'C')) then
+      If ((nembryo.gt.0) .or. (runmode .eq. 'C1')) then
         call write_dump(0.0) 
         CALL evolve
       else

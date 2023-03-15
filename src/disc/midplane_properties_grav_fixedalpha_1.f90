@@ -44,7 +44,7 @@
 
   coolfunc(:) = 0.0
 
-  if (runmode == 'C') then
+  if (runmode == 'C1') then
     call sigma_mdot(t)
     call Eacc_calc(t)
   else

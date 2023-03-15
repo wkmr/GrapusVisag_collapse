@@ -90,6 +90,8 @@ subroutine initial
 
   print*, accr_on
 
+  print*, runmode
+
   print*, 'Parameter file read complete', tdump
 
   rin = rin*udist
