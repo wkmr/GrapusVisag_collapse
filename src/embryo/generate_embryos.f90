@@ -65,30 +65,35 @@ SUBROUTINE generate_embryos(t)
   ! Generate number of possible embryos
   ! Embryo spacing is C Hill Radii, where C uniformly distributed
   ! between 1.5 and 'fragsep' (stored for later use)
-  
+ 
+!
+!  Have removed the ability to produce multiple embryos in this version of the
+!  code.
+!
+ 
   rtest = rfrag
   i=irfrag
   nembryo=1
 
-  j = 0
-  DO WHILE ((i < irout) .and. (alpha_d(i) .gt. alpha_frag)) 
-     j =j+1
-     cspace(j) = 1.5 + ran2(iseed)*(fragsep-1.5)
+!  j = 0
+!  DO WHILE ((i < irout) .and. (alpha_d(i) .gt. alpha_frag)) 
+!     j =j+1
+!     cspace(j) = 1.5 + ran2(iseed)*(fragsep-1.5)
 
-     IF(r_d(i)>rmax) exit
+!     IF(r_d(i)>rmax) exit
 
-     r_hill = rtest*(mjeans(i)/(3.0*mstar))**0.333
+!     r_hill = rtest*(mjeans(i)/(3.0*mstar))**0.333
 
-     DO WHILE (r_d(i) < rtest+cspace(j)*r_hill .and. i<irout)
-        i=i+1
-     END DO
+!     DO WHILE (r_d(i) < rtest+cspace(j)*r_hill .and. i<irout)
+!        i=i+1
+!     END DO
 
-     if (i .lt. irout) Then
-       rtest = r_d(i)
-       nembryo = nembryo+1
-     endif
+!     if (i .lt. irout) Then
+!       rtest = r_d(i)
+!       nembryo = nembryo+1
+!     endif
  
-  ENDDO
+!  ENDDO
   
   write(*,'(A,I1,A)') 'There are ',nembryo, ' embryos'
 
@@ -237,13 +242,18 @@ SUBROUTINE generate_embryos(t)
 	
      ! Now find location of next embryo
 
-     r_hill = rtest*(mjeans(i)/(3.0*mstar))**0.333
+!
+! Have removed this in this version of the code.
+!
 
-     DO WHILE (r_d(i) < rtest+cspace(j)*r_hill .and. i<irout)
-        i=i+1
-     END DO
 
-     rtest = r_d(i)
+!     r_hill = rtest*(mjeans(i)/(3.0*mstar))**0.333
+
+!     DO WHILE (r_d(i) < rtest+cspace(j)*r_hill .and. i<irout)
+!        i=i+1
+!     END DO
+
+!     rtest = r_d(i)
 
      write(istart,'(1P,8E18.10)') embryo(j)%a/udist, embryo(j)%m/mjup, &
           embryo(j)%R0/rjup, embryo(j)%T0, embryo(j)%scrit, &
