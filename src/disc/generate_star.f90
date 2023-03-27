@@ -9,9 +9,9 @@ use embryodata
 
 If (runmode .ne. 'C1') then
   mstar = 10.0d0*umass
-  do while (mstar .gt. 2.0d0*umass) 
+  do while (mstar .gt. mstar1*umass) 
 !     mstar = (mstar0 + mstar0*(1.0 - ran2(iseed))/1.0)*umass
-    mstar = (mstar0 + 3.0d0*ran2(iseed))*umass
+    mstar = (mstar0 + 2.0d0*mstar1*ran2(iseed))*umass
 !    mstar = mstar0*umass
   enddo
 !  mstar = mstar0*umass

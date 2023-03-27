@@ -11,12 +11,13 @@ MODULE stardata
   integer :: nmodels,ntime_mod,nrad_mod
   integer :: Nstar, istar,irout,irfrag, iseed, imodel
   integer :: isr, ier
-  real :: mstar,mstar0,mdisc,q_disc,q_disc0,dr,rin,rout, rtrunc, rtruncmax
+  real :: mstar,mstar0,mstar1,mdisc,q_disc,q_disc0,q_disc1
+  real :: dr,rin,rout, rtrunc, rtruncmax
   real :: mstar_collapse
-  real :: mdotvisc,mdotvisc0,rhomid,rfrag,rmax,tmax
-  real :: Lstar, Tirr0, Tirr
+  real :: mdotvisc,mdotvisc0,mdotvisc1,rhomid,rfrag,rmax,tmax
+  real :: Lstar, Tirr0, Tirr1, Tirr
   real :: maxstep
-  real :: alpha_visc0, alpha_visc, alpha_frag, fragprob
+  real :: alpha_visc0, alpha_visc1, alpha_visc, alpha_frag, fragprob
   character(100) :: discfile,datafilepath
   character(1) :: truncate_disc,debug
   character(1) :: stell_irr

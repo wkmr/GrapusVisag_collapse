@@ -48,12 +48,13 @@ call initial
 
 ! Loop over total number of stars
 !$OMP PARALLEL default(private) &
-!$OMP shared(Nstar,mstar0,prefix_orig,runmode,debug,multishot,tsnap,maxsnap,alpha_visc0,Lx_0) &
+!$OMP shared(Nstar,mstar0,mstar1,prefix_orig,runmode,debug,multishot,tsnap,maxsnap) &
+!$OMP shared(alpha_visc0,alpha_visc1,Lx_0) &
 !$OMP shared(alpha_frag,MJeansdot,fragprob) &
-!$OMP shared(q_disc0,mdotvisc0) &
+!$OMP shared(q_disc0,q_disc1,mdotvisc0,mdotvisc1) &
 !$OMP shared(nbody,datafilepath,tmax,t_disc_dump,iseed,rin) &
-!$OMP shared(stell_irr, Lstar, Tirr0) &
-!$OMP shared(Mcloud_0, Rcloud_0, f_cloud_0, t_frag) &
+!$OMP shared(stell_irr, Lstar, Tirr0, Tirr1) &
+!$OMP shared(Mcloud_0,Mcloud_1,Rcloud_0,Rcloud_1,f_cloud_0,f_cloud_1,t_frag) &
 !$OMP shared(p_kap,fragsep,initialecc,c_mig,c_gap,c_collapse,core_feedback) &
 !$OMP shared(accr_on, accr_on_disc)
 !$OMP do schedule(dynamic)

@@ -3,7 +3,8 @@ module clouddata
 ! This module contains all the properties of the cloud
 !-------------------------------------------------------
   
- real(kind=8) :: Mcloud_0, Rcloud_0, f_cloud_0, t_frag
+ real(kind=8) :: Mcloud_0, Mcloud_1, Rcloud_0, Rcloud_1
+ real(kind=8) :: f_cloud_0, f_cloud_1, t_frag
  real(kind=8) :: rhocloud, beta_cloud, amax_cloud, tff, mdot_cloud, mdot 
  real(kind=8) :: omega_cloud, dmstar_cloud
  real(kind=8) :: dMcloud, dMtot, MRouter, Router, Mouter, Azero
