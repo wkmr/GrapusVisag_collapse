@@ -11,20 +11,23 @@ subroutine setup_cloud
 
   Mcloud = 10.0d0*MCloud_1
   do while (Mcloud .gt. Mcloud_1)
-    Mcloud = (Mcloud_0 + 2.0d0*Mcloud_1*ran2(iseed))
+    call random_number(rnum)
+    Mcloud = (Mcloud_0 + 2.0d0*Mcloud_1*rnum)
   enddo
   Mcloud = Mcloud*solarmass
 
   Rcloud = 10.0d0*Rcloud_1
   do while (Rcloud .gt. Rcloud_1)
-    Rcloud = (Rcloud_0 + 2.0d0*Rcloud_1*ran2(iseed))
+    call random_number(rnum)
+    Rcloud = (Rcloud_0 + 2.0d0*Rcloud_1*rnum)
   enddo
   Rcloud = Rcloud*pc
 !  f_cloud = f_cloud_0 + 2.0d0*f_cloud_0 - 2.0d0*f_cloud_0*ran2(iseed)
 
   f_cloud = 10.0d0*f_cloud_1
   do while (f_cloud .gt. f_cloud_1)
-    f_cloud = f_cloud_0 + 2.0d0*f_cloud_1*ran2(iseed)
+    call random_number(rnum)
+    f_cloud = f_cloud_0 + 2.0d0*f_cloud_1*rnum
   enddo
 !
 !  Mcloud = Mcloud_0*solarmass

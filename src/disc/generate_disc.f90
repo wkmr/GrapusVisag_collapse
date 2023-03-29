@@ -29,11 +29,13 @@ snapshotformat = "(I"//TRIM(zerostring)//"."//TRIM(zerostring)//")"
 
 print*, tmax, t_disc_dump, nfiles, nzeros, snapshotformat
 
-fg = 0.02 + ran2(iseed)*0.01
+call random_number(rnum)
+fg = 0.02 + rnum*0.01
 
 q_disc = 10.0
 do while (q_disc .gt. q_disc1)
-  q_disc = q_disc0 + ran2(iseed)*2.0d0*q_disc1
+  call random_number(rnum)
+  q_disc = q_disc0 + rnum*2.0d0*q_disc1
 enddo
 !q_disc = q_disc0
 
@@ -41,7 +43,8 @@ mdisc = q_disc*mstar
 
 mdotvisc = 1.0d0
 do while (mdotvisc .gt. mdotvisc1)
-  mdotvisc = mdotvisc0 + 2.0d0*(mdotvisc1-mdotvisc0)*ran2(iseed)
+  call random_number(rnum)
+  mdotvisc = mdotvisc0 + 2.0d0*(mdotvisc1-mdotvisc0)*rnum
 enddo
 !mdotvisc = mdotvisc0
 mdotvisc = 10.0**(mdotvisc)*umass/yr
@@ -49,13 +52,15 @@ mdotvisc = 10.0**(mdotvisc)*umass/yr
 If (stell_irr .eq. 'n') Then
   Tirr = 1000.0d0
   do while (Tirr .gt. Tirr1)
-    Tirr = Tirr0 + ran2(iseed)*2.0d0*Tirr1
+    call random_number(rnum)
+    Tirr = Tirr0 + rnum*2.0d0*Tirr1
   enddo
 EndIf
 
 alpha_visc = 1.0d0
 do while (alpha_visc .gt. alpha_visc1)
-  alpha_visc = alpha_visc0 + ran2(iseed)*2.0d0*alpha_visc1
+  call random_number(rnum)
+  alpha_visc = alpha_visc0 + rnum*2.0d0*alpha_visc1
 enddo
 
 print*, 'Generating disc for star ',istar, mstar/umass
@@ -65,7 +70,8 @@ maxstep = 1.0d0
 
 Lx = 10.0d0*Lx_1
 do while (Lx .gt. Lx_1)
-  Lx = Log10(Lx_0) + 3.0d0*Log10(Lx_1)*ran2(iseed)
+  call random_number(rnum)
+  Lx = Log10(Lx_0) + 3.0d0*Log10(Lx_1)*rnum
   Lx = 10.0d0**Lx
 enddo
 print*, 'Luminosity of central star if 1 MSun: ', Lx 

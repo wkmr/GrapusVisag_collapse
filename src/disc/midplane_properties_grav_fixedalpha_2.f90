@@ -14,7 +14,7 @@
   real(kind=8) :: rho, Teff
   real :: diskmass, collapse_term
   real :: gamma_d_old, kappa_d_old
-  real :: t, rnum
+  real :: t
   real, dimension(nrannuli) :: T_d_temp
   integer :: i
   character(1) :: gen_embs

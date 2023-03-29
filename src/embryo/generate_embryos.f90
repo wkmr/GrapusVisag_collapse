@@ -11,7 +11,7 @@ SUBROUTINE generate_embryos(t)
 
   integer :: i,j,ibody
   real :: kappa,r_hill,rtest,exp1,exp2
-  real :: t, rnum
+  real :: t
   real, dimension(100) :: cspace
 
 

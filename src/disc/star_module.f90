@@ -17,6 +17,7 @@ MODULE stardata
   real :: mdotvisc,mdotvisc0,mdotvisc1,rhomid,rfrag,rmax,tmax
   real :: Lstar, Tirr0, Tirr1, Tirr
   real :: maxstep
+  real :: rnum
   real :: alpha_visc0, alpha_visc1, alpha_visc, alpha_frag, fragprob
   character(100) :: discfile,datafilepath
   character(1) :: truncate_disc,debug
@@ -43,6 +44,7 @@ MODULE stardata
 
 !$OMP threadprivate(istar,nmodels,ntime_mod,nrad_mod,irout,irfrag,imodel)
 !$OMP threadprivate(isr,ier,mstar,mdisc,q_disc,dr,rout,rtrunc,rtruncmax)
+!$OMP threadprivate(rnum,alpha_visc)
 !$OMP threadprivate(mdotvisc,rhomid,rfrag,rmax,maxstep,discfile,truncate_disc)
 !$OMP threadprivate(rz,rzm1,rz1_2,drzm1,rf,rf1_2,drfm1,sigma_d,cs_d,omega_d,gamma_J)
 !$OMP threadprivate(sigma_d_collapse,mstar_collapse)
