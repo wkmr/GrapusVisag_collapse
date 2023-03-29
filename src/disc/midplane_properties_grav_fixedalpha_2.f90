@@ -16,6 +16,7 @@
   real :: gamma_d_old, kappa_d_old
   real :: t
   real, dimension(nrannuli) :: T_d_temp
+  real, dimension(nrannuli) :: alpha_temp, cs_temp
   integer :: i
   character(1) :: gen_embs
 
@@ -161,35 +162,39 @@
      
   enddo
 
-  gen_embs = 'N' 
+  gen_embs = 'N'
+  alpha_temp(:) = alpha_g(:)
+  cs_temp(:) = cs_d(:) 
   do i =isr, ier
     if (i .lt. 3) then
-      alpha_g(i) = alpha_g(i) + alpha_g(i+1) + alpha_g(i+2) + alpha_g(i+3)
-      alpha_g(i) = (alpha_g(i) + alpha_g(i+4))/5.0d0
+      alpha_temp(i) = alpha_g(i) + alpha_g(i+1) + alpha_g(i+2) + alpha_g(i+3)
+      alpha_temp(i) = (alpha_temp(i) + alpha_g(i+4))/5.0d0
 
-      cs_d(i) = cs_d(i) + cs_d(i+1) + cs_d(i+2) +cs_d(i+3)
-      cs_d(i) = (cs_d(i) + cs_d(i+4))/5.0d0
+      cs_temp(i) = cs_d(i) + cs_d(i+1) + cs_d(i+2) +cs_d(i+3)
+      cs_temp(i) = (cs_temp(i) + cs_d(i+4))/5.0d0
     endIf
     if (i .gt. ier - 3) then
-      alpha_g(i) = alpha_g(i) + alpha_g(i-4) + alpha_g(i-3) + alpha_g(i-2)
-      alpha_g(i) = (alpha_g(i) + alpha_g(i-1))/5.0d0
+      alpha_temp(i) = alpha_g(i) + alpha_g(i-4) + alpha_g(i-3) + alpha_g(i-2)
+      alpha_temp(i) = (alpha_temp(i) + alpha_g(i-1))/5.0d0
 
-      cs_d(i) = cs_d(i) + cs_d(i-4) + cs_d(i-3) + cs_d(i-2)
-      cs_d(i) = (alpha_g(i) + cs_d(i-1))/5.0d0
+      cs_temp(i) = cs_d(i) + cs_d(i-4) + cs_d(i-3) + cs_d(i-2)
+      cs_temp(i) = (cs_temp(i) + cs_d(i-1))/5.0d0
     endIf
     if ((i .gt. 2)  .and. (i .lt. ier-2)) then
-      alpha_g(i) = alpha_g(i-2) + alpha_g(i-1) + alpha_g(i)
-      alpha_g(i) = (alpha_g(i) + alpha_g(i+1) + alpha_g(i+2))/5.0
+      alpha_temp(i) = alpha_g(i-2) + alpha_g(i-1) + alpha_g(i)
+      alpha_temp(i) = (alpha_temp(i) + alpha_g(i+1) + alpha_g(i+2))/5.0
 
-      cs_d(i) = cs_d(i-2) + cs_d(i-1) + cs_d(i)
-      cs_d(i) = (cs_d(i) + cs_d(i+1) + cs_d(i+2))/5.0
+      cs_temp(i) = cs_d(i-2) + cs_d(i-1) + cs_d(i)
+      cs_temp(i) = (cs_temp(i) + cs_d(i+1) + cs_d(i+2))/5.0
     endif
 
-    If (alpha_g(i) .gt. alpha_frag) Then
+    If (alpha_temp(i) .gt. alpha_frag) Then
       If ((nembryo .eq. 0) .and. (rz(i) .gt. 5.0d0*au)) Then
         gen_embs = 'Y'
       EndIf
     EndIf
+
+    If (alpha_temp(i) .lt. alpha_visc) alpha_temp(i) = alpha_visc
   enddo
 
   where (omega_d > 0.0d0)
@@ -198,7 +203,10 @@
      nu_tc(:) = 0.0d0
   end where
 
-  alpha_g(1) = alpha_g(2)
+  alpha_g(:) = alpha_temp(:)
+  cs_d(:) = cs_temp(:)
+
+!  alpha_g(1) = alpha_g(2)
   alpha_d(:) = alpha_g(:)
 
   cs_d(1) = cs_d(2)
