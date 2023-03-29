@@ -199,7 +199,7 @@ do i = 1, nrannuli
   cs_d(i) = 0.0d0
   betac_d(i) = 0.0d0
   mjeans(i) = 0.0d0
-  alpha_d(i) = 0.0d0
+  alpha_d(i) = alpha_visc 
   r_d(i) = rz(i)
 
   if (stell_irr == 'y') then 
