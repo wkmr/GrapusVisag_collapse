@@ -151,15 +151,14 @@
        If (T_d(i) .lt. T_source(i)) then
          T_d(i) = T_source(i)
        EndIf
-       If (cs_d(i) .eq. 0.0d0) Then
-         cs_d(i) = Sqrt(1.6667*k_B*T_d(i)/2.4d0/m_H)
-       EndIf
+!       If (cs_d(i) .eq. 0.0d0) Then
+       cs_d(i) = Sqrt(1.6667*k_B*T_d(i)/2.4d0/m_H)
+!       EndIf
        coolfunc(i) = 16.0d0/3.0d0*stefan*(T_d(i)**4.0d0-T_source(i)**4.0d0)
        coolfunc(i) = coolfunc(i)*tau_d(i)/(1.0d0+tau_d(i)**2.0d0) 
      else
        T_d(i) = T_d_temp(i)
      endif
-     
   enddo
 
   gen_embs = 'N'
