@@ -23,6 +23,7 @@ subroutine Eacc_calc(t)
    massenc(1) = mstar
    do i = isr, ier
      massenc(i) = sigma_d(i-1)*pi*(rf(i)**2.0d0 - rf(i-1)**2.0d0) + massenc(i-1)
+     if (massenc(i) .lt. 0.0d0) massenc(i) = 0.0d0
    enddo
 
    Router = ((3.0d0*dMtot)/(rhocloud*4.0d0*pi) + rin**3.0d0)**(1.0d0/3.0d0)

@@ -172,7 +172,11 @@ SUBROUTINE evolve
             vr = 0.0d0
           endif
 
-          dTcdr = (T_d(i+1) - T_d(i))*drzm1(i) 
+          If (i .lt. ier) Then  
+            dTcdr = (T_d(i+1) - T_d(i))*drzm1(i) 
+          Else
+            dTcdr = 0.0d0
+          EndIf
 
           If (nembryo .eq. 0) dtorque = 0.0d0
 
@@ -270,20 +274,29 @@ SUBROUTINE evolve
 
           Tnew(i) = T_d(i)
 
+          timestepOK = .true.
+
           if (T_d(i) .gt. 0.0d0) then  
             cp = cs_d(i)**2.0d0/(T_d(i)*1.667d0*(1.667d0-1.0d0))
           else
             cp = cs_d(i)**2.0d0/(T_source(i)*1.667d0*(1.667d0-1.0d0))
           endif
           if (((runmode=='g2').or.(runmode=='C1')).and.(alpha_d(i) .le. (alpha_visc + 1.0e-8))) then
-            if ((sigma_d(i) .ne. 0.0d0).and.(cp .ne. 0.0d0)) Then
+            if ((sigma_d(i) .gt. 0.0d0).and.(cp .gt. 0.0d0)) Then
               Tnew(i) = T_d(i) + 2.0*dt*(heatfunc(i)-coolfunc(i))/(cp*sigma_d(i)) - vr*dTcdr*dt
-              Tnew(i) = Tnew(i) + E_acc(i)*dsigma_cloud(i)*dt/(cp*sigma_d(i)) 
-              If (Tnew(i) .gt. T_d(i)*1.5d0) Then
-                Tnew(i) = T_d(i)*1.5d0
+              If (runmode == 'C1') Then 
+                Tnew(i) = Tnew(i) + E_acc(i)*dsigma_cloud(i)*dt/(cp*sigma_d(i)) 
               EndIf
-              If (Tnew(i) .lt. T_d(i)*0.75d0) Then
-                Tnew(i) = T_d(i)*0.75d0
+              If (isnan(Tnew(i))) Then
+                print*, 'Nan', T_d(i), E_acc(i), dsigma_cloud(i), dt, cp, sigma_d(i)
+              EndIf  
+              If (Tnew(i) .gt. T_d(i)*5.0d0) Then
+                timestepOK = .false.       
+!                Tnew(i) = T_d(i)*1.5d0
+              EndIf
+              If (Tnew(i) .lt. T_d(i)*0.2d0) Then
+                timestepOK = .false.      
+!                Tnew(i) = T_d(i)*0.75d0
               EndIf
             else
               Tnew(i) = T_d(i)
@@ -304,7 +317,6 @@ SUBROUTINE evolve
 !          if (snew(i) .lt. 1.0d-15) snew(i) = 1.0d-15
        enddo    
 
-       timestepOK = .true.
        do i = isr, ier
          if (snew(i) .lt. 0.0d0) timestepOK = .false.
        enddo
@@ -440,7 +452,7 @@ SUBROUTINE evolve
        tdump = 0.0
     endif
 
-    If (t/yr .gt. 3.0d5) Then
+    If (t/yr .gt. 2.0d7) Then
       If (nembryo .eq. 0) Then
         exit
       EndIf
