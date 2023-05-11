@@ -4,23 +4,32 @@ n			Run in debug mode? (y/n)
 y			Have multiple snapshots of population? (y/n)
 1.0e1			Time interval between snapshots (years)
 1.0e2			Snapshots not made after this time (except .final!)
-0.001                   Lower to constant alpha range in no GI regime (from alpha0 to alpha0 + 0.004)
+0.001                   Lower-limit to constant alpha range in no GI regime.
+0.005                   Upper-limit to constant alpha in no GI regime.
 0.060                   Fragmentation boundary as represented by alpha
 n                       Include rate of change of Jeans mass (-10 > MdotJ > 0)
 0.995                   One minus probability of fragmentation in fragmentation region (i.e., 0.95 means 1 in 20).
-1.0e31                  X Ray luminosity (in ergs s-1)
+1.0e29                  Lower-limit to X Ray luminosity (in ergs s-1)
+1.0e31                  Upper-limit to X ray luminosity (in ergs s-1)
 n			Switch on N Body integration? (y/n)
 10000 			Number of Stars to simulate
-0.2                     Minimum star mass in range of star masses (range from mstar0 to 2 MSun) if in g mode.
-0.15                    Lower limit to disc-to-star mass ratio (range from q_disc0 to q_disc0 + 0.2) if in g mode.
--7.5                    Lower limit to log10 of mass accretion rate (range from mdotvisc0 to mdotvisc0 + 1.5) if in g mode.
+0.2                     Lower-limit to star mass if in g mode.
+2.0                     Upper-limit to star mass if in g mode. 
+0.15                    Lower limit to disc-to-star mass ratio if in g mode.
+0.4                     Upper-limit to disc-to-star mass ratio if in g mode.
+-7.5                    Lower-limit to log10 of mass accretion rate if in g mode.
+-6.0                    Upper-limit to log10 of mass accretion rate if in g mode.     
 n                       Assume stellar irradiated disc (n = constant background Tirr)
 10.0                    Luminosity of central star in solar luminosities
-10.0                    Lower limit to constant background irradiation temperature (in K) if not using stellar irradiation (from T0 to T0 + 30K)
+10.0                    Lower limit to constant background irradiation temperature (in K) if not using stellar irradiation
+30.0                    Upper limit to constant background irradiation temperature (in K) if not using stellar irradiation
 ''			File path for data
-0.25     		Lower limit of range of mass of cloud in collapsing cloud runs (solar masses) - C mode (from M0 to M0 + 1.75).
-0.005    		Lower limit of range of radius of cloud (pc) - C mode (from R0 to R0 + 0.1).
-0.01     		Lower limit of range of f, for rotation of cloud - C mode (from f0 to f0 + 0.5).
+0.25     		Lower-limit to mass of cloud in collapsing cloud runs (solar masses) - in C1 mode.
+1.75                    Upper-limit to mass of cloud in collapsing cloud runs (solar masses) - in C1 mode.
+0.005    		Lower-limit to radius of cloud (pc) - in C1 mode.
+0.1                     Upper-limit to radius of cloud (pc) - in C1 mode.  
+0.01     		Lower-limit to f, rotation of cloud - in C1 mode.
+0.5                     Upper-limit to f, rotation of cloud - in C1 mode.    
 5.0d4                   time after which fragmentation can occur (years) - C mode.    
 1.0e6			Maximum evolution time for systems (years)
 1.0e5                   Time between dumps for disc model
