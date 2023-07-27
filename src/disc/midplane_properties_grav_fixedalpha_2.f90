@@ -196,11 +196,20 @@
     If (alpha_temp(i) .lt. alpha_visc) alpha_temp(i) = alpha_visc
   enddo
 
-  where (omega_d > 0.0d0)
-     nu_tc(:) = alpha_g(:)*cs_d(:)*cs_d(:)/omega_d(:)
-  elsewhere
-     nu_tc(:) = 0.0d0
-  end where
+!  alpha_g(:) = alpha_temp(:)
+!  cs_d(:) = cs_temp(:)
+
+  nu_tc(:) = 0.0d0
+  do i = isr, ier
+    If (omega_d(i) > 0.0d0) Then
+      nu_tc(i) = alpha_g(i)*cs_d(i)*cs_d(i)/omega_d(i)
+    EndIf
+  enddo    
+!  where (omega_d > 0.0d0)
+!     nu_tc(:) = alpha_g(:)*cs_d(:)*cs_d(:)/omega_d(:)
+!  elsewhere
+!     nu_tc(:) = 0.0d0
+!  end where
 
   alpha_g(:) = alpha_temp(:)
   cs_d(:) = cs_temp(:)

@@ -48,7 +48,8 @@ call initial
 
 ! Loop over total number of stars
 !$OMP PARALLEL default(private) &
-!$OMP shared(Nstar,mstar0,mstar1,prefix_orig,runmode,debug,multishot,tsnap,maxsnap) &
+!$OMP shared(Nstar,starindex,mstar0,mstar1,prefix_orig) &
+!$OMP shared(runmode,debug,multishot,tsnap,maxsnap) &
 !$OMP shared(alpha_visc0,alpha_visc1,Lx_0) &
 !$OMP shared(alpha_frag,MJeansdot,fragprob) &
 !$OMP shared(q_disc0,q_disc1,mdotvisc0,mdotvisc1) &
@@ -60,7 +61,7 @@ call initial
 !$OMP do schedule(dynamic)
 
   DO is=1,Nstar
-     istar = is
+     istar = is + starindex
 
 !     mdotvisc0 = mdotvisc0 + 0.003*is
  

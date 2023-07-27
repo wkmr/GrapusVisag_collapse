@@ -13,6 +13,7 @@ n                       Include rate of change of Jeans mass (-10 > MdotJ > 0)
 1.0e31                  Upper-limit to X ray luminosity (in ergs s-1)
 n			Switch on N Body integration? (y/n)
 10000 			Number of Stars to simulate
+2000                    Starting star index number 
 0.2                     Lower-limit to star mass if in g mode.
 2.0                     Upper-limit to star mass if in g mode. 
 0.15                    Lower limit to disc-to-star mass ratio if in g mode.

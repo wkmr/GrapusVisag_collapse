@@ -61,6 +61,7 @@ subroutine initial
   read(10,*) Lx_1                  ! Upper-limit to X ray luminosity (in ergs sr-1)   
   read(10,*) nbody                 ! Use N Body integrator? (y/n)
   read(10,*) Nstar                 ! Number of star systems to simulate
+  read(10,*) starindex             ! Starting star index number
   read(10,*) mstar0                ! Lower-limit to mass of star in g mode.
   read(10,*) mstar1                ! Upper-limit to mass of star in g mode. 
   read(10,*) q_disc0               ! Lower-limit to disc-to-star mass ratio in g mode.

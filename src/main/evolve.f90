@@ -452,7 +452,7 @@ SUBROUTINE evolve
        tdump = 0.0
     endif
 
-    If (t/yr .gt. 2.0d7) Then
+    If (t/yr .gt. 2.0d5) Then
       If (nembryo .eq. 0) Then
         exit
       EndIf

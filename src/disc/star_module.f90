@@ -9,7 +9,7 @@ MODULE stardata
 !  integer,parameter :: nrad_mod = 200
 
   integer :: nmodels,ntime_mod,nrad_mod
-  integer :: Nstar, istar,irout,irfrag, iseed, imodel
+  integer :: Nstar,starindex,istar,irout,irfrag, iseed, imodel
   integer :: isr, ier
   real :: mstar,mstar0,mstar1,mdisc,q_disc,q_disc0,q_disc1
   real :: dr,rin,rout, rtrunc, rtruncmax

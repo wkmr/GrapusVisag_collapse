@@ -255,7 +255,7 @@ SUBROUTINE generate_embryos(t)
 
 !     rtest = r_d(i)
 
-     write(istart,'(1P,8E18.10)') embryo(j)%a/udist, embryo(j)%m/mjup, &
+     write(istart,'(I6,8E18.10)') istar, embryo(j)%a/udist, embryo(j)%m/mjup, &
           embryo(j)%R0/rjup, embryo(j)%T0, embryo(j)%scrit, &
           embryo(j)%t_cool0/yr, embryo(j)%t_grow/yr, embryo(j)%t_sed0/yr
 
