@@ -1,5 +1,5 @@
 Monte_clcoll_1_		File prefix for outputs
-C1	                g1=sel-gravitating 1, g2=self-gravitating 2, C1=collapsing cloud
+g2	                g1=sel-gravitating 1, g2=self-gravitating 2, C1=collapsing cloud
 n			Run in debug mode? (y/n)
 y			Have multiple snapshots of population? (y/n)
 1.0e1			Time interval between snapshots (years)
