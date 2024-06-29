@@ -28,6 +28,8 @@ subroutine calc_typeI_migration(iplanet, tmig1)
     tmig1 = 1.0d30
   endif 
 
+!  print*, 'Migration timescale in calc Type I = ', tmig1/yr 
+
   ! Old Bate et al expression
   !tmig1 = aspectratio*mstar/(mp(iplanet)*omegaK(iplanetrad(iplanet)))
   

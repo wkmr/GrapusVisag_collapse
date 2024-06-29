@@ -43,7 +43,9 @@ do iplanet=1,nplanet
     else
        tmig(iplanet) = 0.0
     endif
-           
+
+!    print*, 'Migration timescale in migrate = ', tmig(1)/yr
+
     ! Move planets
     ap(iplanet) = ap(iplanet) + adot(iplanet)*dt
 

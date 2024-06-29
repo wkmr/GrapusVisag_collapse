@@ -46,7 +46,6 @@ do while (mdotvisc .gt. mdotvisc1)
   call random_number(rnum)
   mdotvisc = mdotvisc0 + 2.0d0*(mdotvisc1-mdotvisc0)*rnum
 enddo
-!mdotvisc = mdotvisc0
 mdotvisc = 10.0**(mdotvisc)*umass/yr
 
 If (stell_irr .eq. 'n') Then
@@ -264,16 +263,20 @@ If (runmode .ne. 'C1') then
 
 !	Compare with imposed accretion rate
 
-      if (alpha_d(i) .lt. alpha_visc) alpha_d(i) = alpha_visc
+      if (alpha_d(i) .lt. alpha_visc) Then
+        alpha_d(i) = alpha_visc
 
-      heatfunc(i) = 9.0d0*sigma_d(i)*alpha_d(i)*cs_d(i)**2.0d0*omega_d(i)
-      T = heatfunc(i)*(tau_d(i) + 1.0d0/tau_d(i))
-      T = T + 16.0d0*stefan/3.0d0*T_source(i)**4.0d0
-      T = (T*3.0d0/stefan/16.0d0)**0.25d0   
+        heatfunc(i) = 9.0d0*sigma_d(i)*alpha_d(i)*cs_d(i)**2.0d0*omega_d(i)/4.0d0
+        T = heatfunc(i)*(tau_d(i) + 1.0d0/tau_d(i))
+        T = T + 16.0d0*stefan/3.0d0*T_source(i)**4.0d0
+        T = (T*3.0d0/stefan/16.0d0)**0.25d0   
 
-      if (alpha_d(i) .le. alpha_visc + 1.0d-8) cs_d(i) = SQRT(gamma_d(i)*k_B*T/(2.4*m_H))
+        T_d(i) = T
+      endif
 
-      T_d(i) = T
+      call eos_T(rhomid,T_d(i))
+      cs_d(i) = SQRT(gammamuT(1)*k_B*T_d(i)/(gammamuT(2)*m_H))
+
       Q(i) = cs_d(i)*omega_d(i)/pi/G/sigma_d(i)
 
       mdot_try = 3.0*pi*alpha_d(i)*cs_d(i)*cs_d(i)*sigma_d(i)/omega_d(i)
@@ -316,10 +319,10 @@ If (runmode .ne. 'C1') then
 
     ljeans(i) = cs_d(i)*sqrt(3.0d0*pi/32.0d0/G/rhomid)
 
-    IF(alpha_d(i)<0.1) THEN
+    IF(alpha_d(i) .lt. alpha_frag) THEN
        gamma_j(i) = 2.0*(9.0*alpha_d(i)*gamma_d(i)*(gamma_d(i)-1.0)/4.0 - 1/betac_d(i)) 
     ELSE
-       gamma_j(i) = 2.0*(9.0*0.1*gamma_d(i)*(gamma_d(i)-1.0)/4.0 - 1/betac_d(i))
+       gamma_j(i) = 2.0*(9.0*alpha_frag*gamma_d(i)*(gamma_d(i)-1.0)/4.0 - 1/betac_d(i))
     ENDIF
 
     If (gamma_j(i) .ne. 0.0d0) Then
@@ -359,6 +362,10 @@ If (runmode .ne. 'C1') then
   T_d(ier+1) = T_d(ier)
 endif
 
+!
+! The next do loop allows you to set up a prescribed disc profile for testing
+!
+
 !do i = 1, nrannuli
 !  If (r_d(i) .le. 100.0d0*au) then
 !    gamma_d(i) = 1.0d0 
@@ -366,7 +373,8 @@ endif
 !    sigma_d(i) = sigma_d(i)*(r_d(i)/au)**(-1.5d0)
 !    sigma_d(i) = 0.1d0*Mstar/(2.0d0*pi*au*(100.0d0*au - au))
 !    sigma_d(i) = sigma_d(i)*(r_d(i)/au)**(-1.0d0)
-!    T_d(i) = 300.0d0*(r_d(i)/1.496d13)**(-0.5d0)
+!    sigma_d(i) = 1.0d4*(r_d(i)/au)**(-1.5d0)
+!    T_d(i) = 1000.0d0*(r_d(i)/1.496d13)**(-0.5d0)
 !    cs_d(i) = Sqrt(gamma_d(i)*k_B*T_d(i)/2.4d0/m_H)
 !    alpha_d(i) = 0.01d0
 !  else

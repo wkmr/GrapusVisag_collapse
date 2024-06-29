@@ -83,7 +83,7 @@
      IF(H_d(i)>1.0e-40) THEN
         rho = 0.5d0*sigma_d(i)/H_d(i)
      ELSE
-        rho = 0.0
+        rho = 1.0d-20
      ENDIF
   
      !	Interpolate over rho,T to get cs,kappa, mu, gamma
@@ -99,6 +99,7 @@
         if(T_d_temp(i)<T_source(i)) then
            T_d_temp(i) = T_source(i)
            call eos_T(rho,T_d_temp(i))
+           cs_d(i) = SQRT(gammamuT(1)*k_B*T_d(i)/(gammamuT(2)*m_H))
            Q(i) = cs_d(i)*omega_d(i)/(pi*G*sigma_d(i))
            H_d = cs_d(i)/omega_d(i)
         endif
@@ -139,7 +140,10 @@
           alpha_g(i) = 0.0d0
         EndIf
 
-        collapse_term = 4.0d0*E_acc(i)*dsigma_cloud(i)/9.0d0/cs_d(i)**2.0d0/sigma_d(i)/omega_d(i)
+        collapse_term = 0.0d0
+        If (runmode == 'C1') Then
+          collapse_term = 4.0d0*E_acc(i)*dsigma_cloud(i)/9.0d0/cs_d(i)**2.0d0/sigma_d(i)/omega_d(i)
+        EndIf  
 
         alpha_g(i) = alpha_g(i) - collapse_term
      else if (alpha_g(i) .lt. 1.0d-12 .or.gamma_d(i)<1.00001) THEN
@@ -151,9 +155,9 @@
        If (T_d(i) .lt. T_source(i)) then
          T_d(i) = T_source(i)
        EndIf
-!       If (cs_d(i) .eq. 0.0d0) Then
-       cs_d(i) = Sqrt(1.6667*k_B*T_d(i)/2.4d0/m_H)
-!       EndIf
+       call eos_T(rho,T_d(i))
+       cs_d(i) = SQRT(gammamuT(1)*k_B*T_d(i)/(gammamuT(2)*m_H))
+       
        coolfunc(i) = 16.0d0/3.0d0*stefan*(T_d(i)**4.0d0-T_source(i)**4.0d0)
        coolfunc(i) = coolfunc(i)*tau_d(i)/(1.0d0+tau_d(i)**2.0d0) 
      else

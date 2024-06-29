@@ -112,8 +112,11 @@ SUBROUTINE generate_embryos(t)
   DO j=1,nembryo
 
      embryo(j)%m = mjeans(i)
-!     embryo(j)%m = 10.0d0*mjup
+!     
+!     embryo(j)%m = 1.0d0*mjup
+!
      embryo(j)%a = rtest 
+!
      embryo(j)%semimaj = embryo(j)%a/udist
      embryo(j)%iform = i
      embryo(j)%icurrent = i
@@ -161,10 +164,12 @@ SUBROUTINE generate_embryos(t)
 
      rho_ad = 5.0e-13*kappa_star**(-0.666)*(T1)**((4.0-2.0*p_kap)/3.0)
 
-!     embryo(j)%R0 = 17.5*udist*m1**(-0.333)*T1*(1.0e13*rho_ad)**(-0.666)
-!     embryo(j)%R0 = 6.0*udist*m1**(-0.33333)*T1**((1.0+4.0*p_kap)/9.0)*kappa_star**(4.0/9.0)
-!     embryo(j)%R0 = 6.0d0*udist*m1**(-0.33333d0)*kappa_star**(4.0d0/9.0d0)
+     embryo(j)%R0 = 17.5*udist*m1**(-0.333)*T1*(1.0e13*rho_ad)**(-0.666)
+     embryo(j)%R0 = 6.0*udist*m1**(-0.33333)*T1**((1.0+4.0*p_kap)/9.0)*kappa_star**(4.0/9.0)
+     embryo(j)%R0 = 6.0d0*udist*m1**(-0.33333d0)*kappa_star**(4.0d0/9.0d0)
+     print*, embryo%R0,'  1'
      embryo(j)%R0 = ljeans(i)
+     print*, embryo%R0,'  2'
 !     embryo(j)%R0 = rjup 
 !     embryo(j)%T0 = 146.0*m1**1.3333*T1**(-(1.0+4.0*p_kap)/9)*kappa_star**(-4.0/9.0)
      embryo(j)%T0 = G*mjeans(i)*2.3d0*m_H/k_B/embryo(j)%R0/3.0d0

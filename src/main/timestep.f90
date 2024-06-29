@@ -10,14 +10,14 @@ subroutine timestep(t)
 use stardata
 use eosdata
 use embryodata
-use planetdata, only: torque_term, planetchoice
+use planetdata
 
 implicit none
 
-integer :: i
+integer :: i, iplanet
 real(kind=8) :: dtmin,C0,C1,dr2
 real :: t
-real :: dtvisc, dtmin_visc, dttorq, dtmin_torque
+real :: dtvisc, dtmin_visc, dttorq, dtmin_torque, dtmin_planet
 
 dtmin_visc = 1.0e30
 dtmin_torque = dtmin_visc
@@ -33,6 +33,12 @@ EndIf
 C1 = 0.5d0
 
 !C0 = C0/10.0
+
+iplanet = 1
+
+If (nembryo .gt. 0) Then
+  adot(iplanet) = 0.0d0
+EndIf  
 
 do i = isr, ier
 
@@ -60,13 +66,23 @@ do i = isr, ier
       endif
 
       dtmin_torque = min(dtmin_torque, dttorq)   
+
+      adot(iplanet) = adot(iplanet) + torquei(iplanet,i)*sigma_d(i)/drzm1(i)
+
    endif
 
 enddo
 
+adot(iplanet) = abs(adot(iplanet)*(ap(iplanet)*G*mstar)**0.5*(4.0d0*pi/mp(iplanet)))
+
+dtmin_planet = au/adot(iplanet)
+If ((iplanetrad(iplanet) .gt. isr) .and. (iplanetrad(iplanet) .lt. ier)) Then
+  dtmin_planet =  (rf(iplanetrad(iplanet)+1)-rf(iplanetrad(iplanet)-1))/2.0/adot(iplanet)
+EndIf  
+
 !dt = dtmin_visc
 !dt = min(dtmin, dtmin_visc, dtmin_torque) 
-dt = min(dtmin_visc, dtmin_torque)
+dt = min(dtmin_visc, dtmin_torque, dtmin_planet)
 dt = min(dt,maxstep*yr) ! timestep can not exceed maxstep
     
 !print*, t/yr,dt/yr, dtmin_visc, dtmin_torque

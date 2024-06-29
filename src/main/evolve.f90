@@ -24,7 +24,7 @@ SUBROUTINE evolve
   real (kind=8) :: ro, M_ro, vphi
   real (kind=8) :: masstot, radnew 
   real (kind=8) :: sigma_d_max
- 
+
   real,allocatable, dimension(:) :: massenc, massenc_collapse
 
   real :: dtorque, dTcdr, vr, dt_torque
@@ -107,7 +107,7 @@ SUBROUTINE evolve
        sigma_d(ier+1) = sigma_d(ier)*sqrt(rz(ier)/rz(ier+1))
        T_d(ier+1) = T_d(ier)
 
-       heatfunc(:) = 9.0d0*nu_tc(:)*sigma_d(:)*omega_d(:)*omega_d(:)/8.0d0 
+       heatfunc(:) = 9.0d0*nu_tc(:)*sigma_d(:)*omega_d(:)*omega_d(:)/4.0d0 
    
        If ((runmode == 'C1') .and. (t .lt. 2.0d0*tff)) Then
          call setup_wind
@@ -276,7 +276,8 @@ SUBROUTINE evolve
 
           timestepOK = .true.
 
-          if (T_d(i) .gt. 0.0d0) then  
+          if (T_d(i) .gt. 0.0d0) then
+                  
             cp = cs_d(i)**2.0d0/(T_d(i)*1.667d0*(1.667d0-1.0d0))
           else
             cp = cs_d(i)**2.0d0/(T_source(i)*1.667d0*(1.667d0-1.0d0))
@@ -412,7 +413,7 @@ SUBROUTINE evolve
 !        print*, 0.8d0*au*kappa_star**0.5d0*(10.0d4*yr/t)**0.5d0/au
         tout = 0.0d0
 
-!        write(16,*) t/3.15d7, mp(1)/mjup, ap(1)/au
+        write(16,*) t/3.15d7, mp(1)/mjup, ap(1)/au
  
         diskmass = 0.0d0
         do i = isr, ier

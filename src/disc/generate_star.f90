@@ -12,7 +12,7 @@ If (runmode .ne. 'C1') then
   do while (mstar .gt. mstar1*umass) 
 !     mstar = (mstar0 + mstar0*(1.0 - ran2(iseed))/1.0)*umass
     call random_number(rnum)
-    print*, rnum
+!    print*, rnum
     mstar = (mstar0 + 2.0d0*mstar1*rnum)*umass
 !    mstar = mstar0*umass
   enddo
