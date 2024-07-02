@@ -77,7 +77,7 @@ adot(iplanet) = abs(adot(iplanet)*(ap(iplanet)*G*mstar)**0.5*(4.0d0*pi/mp(iplane
 
 dtmin_planet = au/adot(iplanet)
 If ((iplanetrad(iplanet) .gt. isr) .and. (iplanetrad(iplanet) .lt. ier)) Then
-  dtmin_planet =  (rf(iplanetrad(iplanet)+1)-rf(iplanetrad(iplanet)-1))/2.0/adot(iplanet)
+  dtmin_planet =  (rf(iplanetrad(iplanet)+1)-rf(iplanetrad(iplanet)-1))/4.0/adot(iplanet)
 EndIf  
 
 !dt = dtmin_visc

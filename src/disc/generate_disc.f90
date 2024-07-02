@@ -275,6 +275,8 @@ If (runmode .ne. 'C1') then
       endif
 
       call eos_T(rhomid,T_d(i))
+      gamma_d(i) = gammamuT(1)
+      kappa_d(i) = gammamuT(4)
       cs_d(i) = SQRT(gammamuT(1)*k_B*T_d(i)/(gammamuT(2)*m_H))
 
       Q(i) = cs_d(i)*omega_d(i)/pi/G/sigma_d(i)
@@ -367,14 +369,14 @@ endif
 !
 
 !do i = 1, nrannuli
-!  If (r_d(i) .le. 100.0d0*au) then
+!  If (r_d(i) .le. 200.0d0*au) then
 !    gamma_d(i) = 1.0d0 
 !    sigma_d(i) = 0.1d0*Mstar/(2.0d0*pi*au**1.5*2.0*((35.0d0*au)**0.5-au**0.5))
 !    sigma_d(i) = sigma_d(i)*(r_d(i)/au)**(-1.5d0)
 !    sigma_d(i) = 0.1d0*Mstar/(2.0d0*pi*au*(100.0d0*au - au))
 !    sigma_d(i) = sigma_d(i)*(r_d(i)/au)**(-1.0d0)
-!    sigma_d(i) = 1.0d4*(r_d(i)/au)**(-1.5d0)
-!    T_d(i) = 1000.0d0*(r_d(i)/1.496d13)**(-0.5d0)
+!    sigma_d(i) = 1.0d3*(r_d(i)/au)**(-1.0d0)
+!    T_d(i) = 250.0d0*(r_d(i)/1.496d13)**(-0.5d0)
 !    cs_d(i) = Sqrt(gamma_d(i)*k_B*T_d(i)/2.4d0/m_H)
 !    alpha_d(i) = 0.01d0
 !  else

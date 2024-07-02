@@ -92,10 +92,10 @@ subroutine compute_planet_torques(t)
 
         if ((H_d(i)+rhill) .gt. 0.0d0) Then 
           if(rz(i)<ap(iplanet)) then
-             typeInorm = typeInorm - exp(-deltap/(H_d(i)+rhill))*sigma_d(i)/drzm1(i)    
+             typeInorm = typeInorm + exp(-deltap/(H_d(i)+rhill))*sigma_d(i)/drzm1(i)    
 !             typeInorm = typeInorm + 2.0d0*pi*rz(i)*exp(-deltap/(H_d(i)+rhill))*sigma_d(i)/drzm1(i)        
           else
-             typeInorm = typeInorm + exp(-deltap/(H_d(i)+rhill))*sigma_d(i)/drzm1(i)    
+             typeInorm = typeInorm - exp(-deltap/(H_d(i)+rhill))*sigma_d(i)/drzm1(i)    
 !             typeInorm = typeInorm + 2.0d0*pi*rz(i)*exp(-deltap/(H_d(i)+rhill))*sigma_d(i)/drzm1(i)        
           endif
         endif  
@@ -127,19 +127,20 @@ subroutine compute_planet_torques(t)
         if(deltap<H_d(i)) deltap =H_d(i)
         if(deltap<1.44d0*rhill) deltap=1.44d0*rhill
 
-        lambdaI(iplanet,i) = lambda_dash*exp(-deltap/(H_d(i)+rhill))/typeInorm
-     
+        lambdaI(iplanet,i) = lambda_dash*exp(-deltap/(H_d(i)+rhill))/abs(typeInorm)
+      
         lambdaI(iplanet,i) = lambdaI(iplanet,i)/(2.0d0*pi*G*mstar)
 
-        if(rz(i)<ap(iplanet)) lambdaI(iplanet,i) = -1.0d0*lambdaI(iplanet,i)
+        if (rz(i) .gt. ap(iplanet)) lambdaI(iplanet,i) = abs(lambdaI(iplanet,i)) 
+        if (rz(i) .lt. ap(iplanet)) lambdaI(iplanet,i) = -1.0d0*abs(lambdaI(iplanet,i))
 
         lambdaI_total = lambdaI_total + 2.0d0*pi*G*mstar*lambdaI(iplanet,i)*sigma_d(i)/drzm1(i)         
         lambdaII_total = lambdaII_total + 2.0d0*pi*G*mstar*lambdaII(iplanet,i)*sigma_d(i)/drzm1(i)
 
-
+!        print*, i, lambdaI(iplanet,i), lambdaII(iplanet,i)
      enddo
 
-!     print*, t/yr, lambda_dash, lambdaI_total, lambdaII_total, tmig1/yr
+!     print*, t/yr, lambda_dash, lambdaI_total, lambdaII_total, typeInorm
 
      !**************************************************
      ! Now compute the relative dominance of each torque 
@@ -155,14 +156,14 @@ subroutine compute_planet_torques(t)
      if(fII(iplanet) > 1.0) fII(iplanet) = 1.0d0
 
 !     if (t/yr .gt. 5.0d5) Then
-!        print*, Pcrit, fII(iplanet), H_d(iplanet)/au, mp(iplanet)/1.898d30 
+!        print*, Pcrit, fII(iplanet), H_d(iplanetrad(iplanet))/au, mp(iplanet)/1.898d30 
 !        print*, ap(iplanet)/au, rhill/au
 !        print*, alpha_d(iplanetrad(iplanet)), gap_crit/1.898d30
 !     endif
 
 !     fII(iplanet) = 0.0d0
 
-!      print*, fII(iplanet)
+!      print*, fII(iplanet), Pcrit
 
       !********************************************************
       ! Compute the total effective planet torque at this radius

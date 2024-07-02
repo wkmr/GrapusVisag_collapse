@@ -99,9 +99,9 @@
         if(T_d_temp(i)<T_source(i)) then
            T_d_temp(i) = T_source(i)
            call eos_T(rho,T_d_temp(i))
-           cs_d(i) = SQRT(gammamuT(1)*k_B*T_d(i)/(gammamuT(2)*m_H))
+           cs_d(i) = SQRT(gammamuT(1)*k_B*T_d_temp(i)/(gammamuT(2)*m_H))
            Q(i) = cs_d(i)*omega_d(i)/(pi*G*sigma_d(i))
-           H_d = cs_d(i)/omega_d(i)
+           H_d(i) = cs_d(i)/omega_d(i)
         endif
         
         ! Now calculate cooling time

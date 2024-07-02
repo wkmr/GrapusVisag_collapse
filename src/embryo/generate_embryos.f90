@@ -53,6 +53,8 @@ SUBROUTINE generate_embryos(t)
      EndIf
   ENDDO
 
+!  i = 300
+
   IF(i==nrannuli) THEN
      IF(allocated(embryo)) deallocate(embryo)
      nembryo=0
@@ -70,7 +72,9 @@ SUBROUTINE generate_embryos(t)
 !  Have removed the ability to produce multiple embryos in this version of the
 !  code.
 !
- 
+!  i = 300
+!  irfrag = 300
+  rfrag = r_d(i) 
   rtest = rfrag
   i=irfrag
   nembryo=1
@@ -113,7 +117,7 @@ SUBROUTINE generate_embryos(t)
 
      embryo(j)%m = mjeans(i)
 !     
-!     embryo(j)%m = 1.0d0*mjup
+!     embryo(j)%m = 0.1d0*mjup
 !
      embryo(j)%a = rtest 
 !
@@ -169,6 +173,7 @@ SUBROUTINE generate_embryos(t)
      embryo(j)%R0 = 6.0d0*udist*m1**(-0.33333d0)*kappa_star**(4.0d0/9.0d0)
      print*, embryo%R0,'  1'
      embryo(j)%R0 = ljeans(i)
+!     embryo(j)%R0 = rjup
      print*, embryo%R0,'  2'
 !     embryo(j)%R0 = rjup 
 !     embryo(j)%T0 = 146.0*m1**1.3333*T1**(-(1.0+4.0*p_kap)/9)*kappa_star**(-4.0/9.0)
@@ -176,7 +181,7 @@ SUBROUTINE generate_embryos(t)
      embryo(j)%cs0 = gamma_d(i)*k_B*embryo(j)%T0/(mu*m_H)
      embryo(j)%cs0 = sqrt(embryo(j)%cs0)
 
-     print*, embryo(j)%R0/au, ljeans(i)/au, alpha_d(i), embryo(j)%t_form
+     print*, 'R0,lj,alpha,tform = ', embryo(j)%R0/au, ljeans(i)/au, alpha_d(i), embryo(j)%t_form
 
      embryo(j)%R = embryo(j)%R0
      embryo(j)%rhoc = embryo(j)%M/(4.0*pi*theta_grad*embryo(j)%R**3)

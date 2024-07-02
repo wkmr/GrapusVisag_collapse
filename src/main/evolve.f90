@@ -277,7 +277,6 @@ SUBROUTINE evolve
           timestepOK = .true.
 
           if (T_d(i) .gt. 0.0d0) then
-                  
             cp = cs_d(i)**2.0d0/(T_d(i)*1.667d0*(1.667d0-1.0d0))
           else
             cp = cs_d(i)**2.0d0/(T_source(i)*1.667d0*(1.667d0-1.0d0))
