@@ -38,7 +38,7 @@ integer,parameter :: isnapfile = 40
 integer :: nembryo, nbodies,isnap,nsnaps,nzeros,finishcheck
 
 real :: fg,kappa_0,kappa_star,rho_ad, m1,T1,mfp,dt, p_kap, p_grow
-real :: c_mig,c_gap,c_collapse, maxerror,fragsep,tsnap,maxsnap
+real :: c_mig,c_gap,c_collapse, maxerror,fragsep,tsnap,tstop,maxsnap
 character(1) :: core_feedback,accr_on,accr_on_disc,nbody,multishot,initialecc,zerostring
 character(6) :: zeroformat,snapchar
 

@@ -49,7 +49,7 @@ call initial
 ! Loop over total number of stars
 !$OMP PARALLEL default(private) &
 !$OMP shared(Nstar,starindex,mstar0,mstar1,prefix_orig) &
-!$OMP shared(runmode,debug,multishot,tsnap,maxsnap) &
+!$OMP shared(runmode,debug,multishot,tsnap,tstop,maxsnap) &
 !$OMP shared(alpha_visc0,alpha_visc1,Lx_0) &
 !$OMP shared(alpha_frag,MJeansdot,fragprob) &
 !$OMP shared(q_disc0,q_disc1,mdotvisc0,mdotvisc1) &
@@ -104,7 +104,7 @@ call initial
 
       print*, nembryo, nplanet
 
-      If ((nembryo.gt.0) .or. (runmode .eq. 'C1')) then
+      If ((nembryo.gt.0) .or. (runmode .eq. 'C1') .or. (tstop .gt. 0.0)) then
         call write_dump(0.0) 
         CALL evolve
       else

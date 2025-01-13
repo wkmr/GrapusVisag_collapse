@@ -412,7 +412,7 @@ SUBROUTINE evolve
 !        print*, 0.8d0*au*kappa_star**0.5d0*(10.0d4*yr/t)**0.5d0/au
         tout = 0.0d0
 
-        write(16,*) t/3.15d7, mp(1)/mjup, ap(1)/au
+!        write(16,*) t/3.15d7, mp(1)/mjup, ap(1)/au
  
         diskmass = 0.0d0
         do i = isr, ier
@@ -452,7 +452,7 @@ SUBROUTINE evolve
        tdump = 0.0
     endif
 
-    If (t/yr .gt. 2.0d5) Then
+    If (t .gt. tstop) Then
       If (nembryo .eq. 0) Then
         exit
       EndIf

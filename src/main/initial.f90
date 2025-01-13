@@ -51,6 +51,7 @@ subroutine initial
   read(10,*) debug                 ! Run in debug mode? (y/n)
   read(10,*) multishot             ! Multiple time snapshots of popn? (y/n)
   read(10,*) tsnap                 ! Time between population snapshots
+  read(10,*) tstop                 ! Time to stop if no embryos in g mode 
   read(10,*) maxsnap               ! Popn time snapshots not made after this time (except final snapshot!)
   read(10,*) alpha_visc0           ! Lower-limit to constant alpha in no GI regime
   read(10,*) alpha_visc1           ! Upper-limit to constant alpha in no GI regime
@@ -108,13 +109,14 @@ subroutine initial
   dr = dr*udist
 
   tsnap = tsnap*yr
+  tstop = tstop*yr
   maxsnap = maxsnap*yr
 
   p_grow = (1.0+p_kap)/(2.5+p_kap)
 
   iseed = -abs(iseed)
 
-  print*, 'iseed 1 = ', iseed 
+  print*, 'iseed 1 = ', iseed, tsnap, tstop 
 
   ! Disc model counter (only used when interpolating from file)
   imodel = 0

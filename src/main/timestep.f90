@@ -22,6 +22,7 @@ real :: dtvisc, dtmin_visc, dttorq, dtmin_torque, dtmin_planet
 dtmin_visc = 1.0e30
 dtmin_torque = dtmin_visc
 dtmin = dtmin_visc
+dtmin_planet = dtmin_visc
 
 If (t .lt. 1.0d8) Then
    C0 = 0.01d0
@@ -73,11 +74,13 @@ do i = isr, ier
 
 enddo
 
-adot(iplanet) = abs(adot(iplanet)*(ap(iplanet)*G*mstar)**0.5*(4.0d0*pi/mp(iplanet)))
+If (nembryo .gt. 0) Then
+  adot(iplanet) = abs(adot(iplanet)*(ap(iplanet)*G*mstar)**0.5*(4.0d0*pi/mp(iplanet)))
 
-dtmin_planet = au/adot(iplanet)
-If ((iplanetrad(iplanet) .gt. isr) .and. (iplanetrad(iplanet) .lt. ier)) Then
-  dtmin_planet =  (rf(iplanetrad(iplanet)+1)-rf(iplanetrad(iplanet)-1))/4.0/adot(iplanet)
+  dtmin_planet = au/adot(iplanet)
+  If ((iplanetrad(iplanet) .gt. isr) .and. (iplanetrad(iplanet) .lt. ier)) Then
+    dtmin_planet =  (rf(iplanetrad(iplanet)+1)-rf(iplanetrad(iplanet)-1))/4.0/adot(iplanet)
+  EndIf
 EndIf  
 
 !dt = dtmin_visc

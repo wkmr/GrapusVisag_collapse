@@ -99,7 +99,7 @@ subroutine compute_planet_torques(t)
 !             typeInorm = typeInorm + 2.0d0*pi*rz(i)*exp(-deltap/(H_d(i)+rhill))*sigma_d(i)/drzm1(i)        
           endif
         endif  
-       
+
      enddo
 
      ! Compute Type I migration timescale
@@ -137,10 +137,10 @@ subroutine compute_planet_torques(t)
         lambdaI_total = lambdaI_total + 2.0d0*pi*G*mstar*lambdaI(iplanet,i)*sigma_d(i)/drzm1(i)         
         lambdaII_total = lambdaII_total + 2.0d0*pi*G*mstar*lambdaII(iplanet,i)*sigma_d(i)/drzm1(i)
 
-!        print*, i, lambdaI(iplanet,i), lambdaII(iplanet,i)
+!        print*, i, rz(i)/au, lambdaI(iplanet,i), lambdaII(iplanet,i), H_d(i)/au, rhill/au 
      enddo
 
-!     print*, t/yr, lambda_dash, lambdaI_total, lambdaII_total, typeInorm
+!     print*, t/yr, lambda_dash, lambdaI_total, lambdaII_total, typeInorm, tmig1
 
      !**************************************************
      ! Now compute the relative dominance of each torque 
